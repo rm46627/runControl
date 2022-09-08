@@ -1,11 +1,13 @@
-package com.example.runcontrol
+package com.example.runcontrol.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import com.example.runcontrol.R
 import com.example.runcontrol.util.Permissions.hasLocationPermission
 import com.example.runcontrol.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
 class MainActivity : AppCompatActivity() {
 
