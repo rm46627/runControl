@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import com.example.runcontrol.R
 import com.example.runcontrol.databinding.FragmentMapsBinding
@@ -44,6 +45,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private var locationList = mutableListOf<LatLng>()
     private var startTime = 0L
     private var stopTime = 0L
+    val started = MutableLiveData(false)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,6 +53,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMapsBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = this
+        binding.tracking = this
 
         binding.startBtn.setOnClickListener {
             onStartButtonClicked()
@@ -104,6 +108,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             if (stopTime != 0L) {
                 showBiggerPicture()
             }
+        }
+        TrackerService.started.observe(viewLifecycleOwner) {
+            started.value = it
         }
     }
 

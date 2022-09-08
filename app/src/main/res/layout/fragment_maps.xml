@@ -5,6 +5,10 @@
 
     <data>
 
+        <variable
+            name="tracking"
+            type="com.example.runcontrol.ui.maps.MapsFragment" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,7 +31,7 @@
             android:id="@+id/timer_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="3"
+            android:text="@string/timer_placeholder"
             android:textColor="@color/red"
             android:textSize="80sp"
             android:textStyle="bold"
@@ -39,6 +43,7 @@
 
         <TextView
             android:id="@+id/hint_textView"
+            observeTracking="@{tracking.started}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/tap_on_my_location_button"
@@ -63,11 +68,12 @@
 
         <Button
             android:id="@+id/stop_btn"
+            observeTracking="@{tracking.started}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="@string/stop_btn"
             android:backgroundTint="@color/red"
+            android:text="@string/stop_btn"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

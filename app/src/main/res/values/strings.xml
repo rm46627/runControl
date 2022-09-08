@@ -10,4 +10,5 @@
     <string name="stop_btn">Stop</string>
     <string name="reset_btn">Reset</string>
     <string name="go_count_down_timer">GO</string>
+    <string name="timer_placeholder">3</string>
 </resources>
