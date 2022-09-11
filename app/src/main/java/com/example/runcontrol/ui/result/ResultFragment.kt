@@ -5,17 +5,28 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.navArgs
 import com.example.runcontrol.R
+import com.example.runcontrol.databinding.FragmentMapsBinding
+import com.example.runcontrol.databinding.FragmentResultBinding
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 
-class ResultFragment : Fragment() {
+class ResultFragment : BottomSheetDialogFragment() {
+
+    private val args: ResultFragmentArgs by navArgs()
+    private lateinit var binding: FragmentResultBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_result, container, false)
+    ): View {
+        binding = FragmentResultBinding.inflate(inflater, container, false)
+
+        binding.distanceValueTextView.text = args.result.distance
+        binding.timeValueTextView.text = args.result.time
+
+        return binding.root
     }
 
 }

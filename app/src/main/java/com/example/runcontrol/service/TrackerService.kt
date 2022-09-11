@@ -12,6 +12,8 @@ import android.os.Looper
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
+import com.example.runcontrol.ui.maps.MapUtil.calculateDistance
+import com.example.runcontrol.ui.maps.MapUtil.formatDistance
 import com.example.runcontrol.util.Constants.ACTION_SERVICE_START
 import com.example.runcontrol.util.Constants.ACTION_SERVICE_STOP
 import com.example.runcontrol.util.Constants.LOCATION_FASTEST_UPDATE_INTERVAL
@@ -38,6 +40,7 @@ class TrackerService: LifecycleService() {
         val started = MutableLiveData<Boolean>()
         val startTime = MutableLiveData<Long>()
         val stopTime = MutableLiveData<Long>()
+        val distance = MutableLiveData<Double>()
         val locationList = MutableLiveData<MutableList<LatLng>>()
     }
 
@@ -46,6 +49,7 @@ class TrackerService: LifecycleService() {
         locationList.postValue(mutableListOf())
         startTime.postValue(0L)
         stopTime.postValue(0L)
+        distance.postValue((0.0))
     }
 
     private val locationCallback = object : LocationCallback(){
@@ -54,6 +58,7 @@ class TrackerService: LifecycleService() {
             result.locations.let { locations ->
                 for(location in locations){
                     updateLocationList(location)
+                    updateNotificationPeriodically()
                 }
             }
         }
@@ -123,6 +128,15 @@ class TrackerService: LifecycleService() {
             Looper.getMainLooper()
         )
         startTime.postValue(System.currentTimeMillis())
+    }
+
+    private fun updateNotificationPeriodically() {
+        notification.apply {
+            setContentTitle("Distance Travelled")
+            distance.postValue(locationList.value?.let { calculateDistance(it, distance.value!!) })
+            setContentText(formatDistance(distance.value!!))
+        }
+        notificationManager.notify(NOTIFICATION_ID, notification.build())
     }
 
     private fun createNotificationChannel(){

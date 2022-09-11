@@ -25,13 +25,18 @@
             android:id="@+id/action_mapsFragment_to_resultFragment"
             app:destination="@id/resultFragment" />
     </fragment>
-    <fragment
+    <dialog
         android:id="@+id/resultFragment"
-        android:name="com.example.runcontrol.ResultFragment"
+        android:name="com.example.runcontrol.ui.result.ResultFragment"
         android:label="fragment_result"
         tools:layout="@layout/fragment_result" >
         <action
             android:id="@+id/action_resultFragment_to_mapsFragment"
-            app:destination="@id/mapsFragment" />
-    </fragment>
+            app:destination="@id/mapsFragment"
+            app:popUpTo="@id/mapsFragment"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="result"
+            app:argType="com.example.runcontrol.model.Result" />
+    </dialog>
 </navigation>

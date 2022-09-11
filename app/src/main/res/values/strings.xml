@@ -11,4 +11,9 @@
     <string name="reset_btn">Reset</string>
     <string name="go_count_down_timer">GO</string>
     <string name="timer_placeholder">3</string>
+    <string name="distance_textView">Distance</string>
+    <string name="time_textView">Time</string>
+    <string name="distance_placeholder">0 m</string>
+    <string name="time_placeholder">00:00:00</string>
+    <string name="share_btn">Share</string>
 </resources>

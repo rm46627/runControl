@@ -13,9 +13,13 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.runcontrol.R
 import com.example.runcontrol.databinding.FragmentMapsBinding
+import com.example.runcontrol.model.Result
 import com.example.runcontrol.service.TrackerService
+import com.example.runcontrol.ui.maps.MapUtil.calculateElapsedTime
+import com.example.runcontrol.ui.maps.MapUtil.formatDistance
 import com.example.runcontrol.ui.maps.MapUtil.setCameraPosition
 import com.example.runcontrol.util.Constants.ACTION_SERVICE_START
 import com.example.runcontrol.util.Constants.ACTION_SERVICE_STOP
@@ -45,6 +49,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private var locationList = mutableListOf<LatLng>()
     private var startTime = 0L
     private var stopTime = 0L
+    private var distance = 0.0
     val started = MutableLiveData(false)
 
     override fun onCreateView(
@@ -107,15 +112,19 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             stopTime = it
             if (stopTime != 0L) {
                 showBiggerPicture()
+                displayResults()
             }
         }
         TrackerService.started.observe(viewLifecycleOwner) {
             started.value = it
         }
+        TrackerService.distance.observe(viewLifecycleOwner) {
+            distance = it
+        }
     }
 
     private fun drawPolyline() {
-        val polyline = map.addPolyline(
+        map.addPolyline(
             PolylineOptions().apply {
                 width(10f)
                 color(Color.BLUE)
@@ -125,6 +134,16 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
                 addAll(locationList)
             }
         )
+    }
+
+    private fun followPosition() {
+        if (locationList.isNotEmpty()) {
+            map.animateCamera(
+                CameraUpdateFactory.newCameraPosition(setCameraPosition(locationList.last())),
+                1000,
+                null
+            )
+        }
     }
 
     private fun showBiggerPicture() {
@@ -139,32 +158,44 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         )
     }
 
-    private fun followPosition() {
-        if (locationList.isNotEmpty()) {
-            map.animateCamera(
-                CameraUpdateFactory.newCameraPosition(setCameraPosition(locationList.last())),
-                1000,
-                null
-            )
+    private fun displayResults() {
+        val result = Result(
+            formatDistance(distance),
+            calculateElapsedTime(startTime, stopTime)
+        )
+        lifecycleScope.launch {
+            delay(2500L)
+            val directions = MapsFragmentDirections.actionMapsFragmentToResultFragment(result)
+            findNavController().navigate(directions)
+            binding.startBtn.apply {
+                hide()
+                enable()
+            }
+            binding.stopBtn.hide()
+            binding.resetBtn.show()
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun onStartButtonClicked() {
         if (hasBackgroundLocationPermission(requireContext())) {
             startCountDown()
             binding.startBtn.disable()
             binding.startBtn.hide()
             binding.stopBtn.show()
+            map.isMyLocationEnabled = false
 
         } else {
             requestBackgroundLocationPermission(this)
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun onStopButtonClicked() {
         stopForegroundService()
         binding.stopBtn.hide()
         binding.startBtn.show()
+        map.isMyLocationEnabled = true
     }
 
     private fun startCountDown() {
