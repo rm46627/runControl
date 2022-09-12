@@ -1,6 +1,13 @@
 package com.example.runcontrol.ui.maps
 
-import com.example.runcontrol.service.TrackerService
+import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.DrawableCompat
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
@@ -16,11 +23,12 @@ object MapUtil {
     }
 
     fun calculateElapsedTime(startTime: Long, stopTime: Long): String {
-        val elapsedTime = startTime - stopTime
+        val elapsedTime = stopTime - startTime
         val seconds = (elapsedTime / 1000).toInt() % 60
         val minutes = (elapsedTime / (1000 * 60) % 60)
         val hours = (elapsedTime / (1000 * 60 * 60) % 24)
-        return "$hours:$minutes:$seconds"
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds)
+//        return "$hours:$minutes:$seconds"
     }
 
     fun calculateDistance(locationList: MutableList<LatLng>, distance: Double): Double {
@@ -34,9 +42,24 @@ object MapUtil {
     }
 
     fun formatDistance(distance: Double): String {
-        if (distance > 999){
-            return "${DecimalFormat("#.##").format(distance/1000)} km"
+        if (distance > 999) {
+            return "${DecimalFormat("#.##").format(distance / 1000)} km"
         }
         return "${distance.toInt()} m"
+    }
+
+    fun fromVectorToBitmap(resources: Resources, id: Int, color: Int): BitmapDescriptor {
+        val vectorDrawable: Drawable = ResourcesCompat.getDrawable(resources, id, null)
+            ?: return BitmapDescriptorFactory.defaultMarker()
+        val bitmap = Bitmap.createBitmap(
+            vectorDrawable.intrinsicWidth,
+            vectorDrawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(bitmap)
+        vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
+        DrawableCompat.setTint(vectorDrawable, color)
+        vectorDrawable.draw(canvas)
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 }

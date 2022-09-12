@@ -1,5 +1,6 @@
 package com.example.runcontrol.ui.result
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -26,7 +27,20 @@ class ResultFragment : BottomSheetDialogFragment() {
         binding.distanceValueTextView.text = args.result.distance
         binding.timeValueTextView.text = args.result.time
 
+        binding.shareBtn.setOnClickListener{
+            shareResult()
+        }
+
         return binding.root
+    }
+
+    private fun shareResult() {
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, "I went ${args.result.distance} in ${args.result.time}!")
+        }
+        startActivity(shareIntent)
     }
 
 }
