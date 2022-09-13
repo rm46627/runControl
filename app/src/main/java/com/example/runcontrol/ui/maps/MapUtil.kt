@@ -4,6 +4,7 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.google.android.gms.maps.model.BitmapDescriptor
@@ -12,6 +13,7 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
 import java.text.DecimalFormat
+import kotlin.math.roundToInt
 
 object MapUtil {
 
@@ -29,6 +31,16 @@ object MapUtil {
         val hours = (elapsedTime / (1000 * 60 * 60) % 24)
         return String.format("%02d:%02d:%02d", hours, minutes, seconds)
 //        return "$hours:$minutes:$seconds"
+    }
+
+    fun getTimerStringFromTime(time: Double): String {
+        val resultInt = time.roundToInt()
+        val hours = resultInt / (60 * 60)
+        val minutes = (resultInt / 60) % 60
+        val seconds = resultInt % 60
+        val out = String.format("%02d:%02d:%02d", hours, minutes, seconds)
+        Log.d("Timer", out)
+        return out
     }
 
     fun calculateDistance(locationList: MutableList<LatLng>, distance: Double): Double {

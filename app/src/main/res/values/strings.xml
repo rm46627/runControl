@@ -16,4 +16,5 @@
     <string name="distance_placeholder">0 m</string>
     <string name="time_placeholder">00:00:00</string>
     <string name="share_btn">Share</string>
+    <string name="date_placeholder">12:00:00 01/01/2001</string>
 </resources>

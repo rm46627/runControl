@@ -6,5 +6,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Result(
     var distance: String,
-    var time: String
+    var time: String,
+    var date: String
 ): Parcelable

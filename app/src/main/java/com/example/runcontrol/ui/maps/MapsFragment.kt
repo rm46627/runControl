@@ -3,14 +3,13 @@ package com.example.runcontrol.ui.maps
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
-import androidx.fragment.app.Fragment
-
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -18,12 +17,12 @@ import com.example.runcontrol.R
 import com.example.runcontrol.databinding.FragmentMapsBinding
 import com.example.runcontrol.model.Result
 import com.example.runcontrol.service.TrackerService
-import com.example.runcontrol.ui.maps.MapUtil.calculateElapsedTime
 import com.example.runcontrol.ui.maps.MapUtil.formatDistance
 import com.example.runcontrol.ui.maps.MapUtil.fromVectorToBitmap
+import com.example.runcontrol.ui.maps.MapUtil.getTimerStringFromTime
 import com.example.runcontrol.ui.maps.MapUtil.setCameraPosition
-import com.example.runcontrol.util.Constants.ACTION_SERVICE_START
-import com.example.runcontrol.util.Constants.ACTION_SERVICE_STOP
+import com.example.runcontrol.util.Constants.TRACKER_SERVICE_START
+import com.example.runcontrol.util.Constants.TRACKER_SERVICE_STOP
 import com.example.runcontrol.util.ExtensionFunctions.disable
 import com.example.runcontrol.util.ExtensionFunctions.enable
 import com.example.runcontrol.util.ExtensionFunctions.hide
@@ -33,7 +32,6 @@ import com.example.runcontrol.util.Permissions.requestBackgroundLocationPermissi
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
-
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
@@ -54,9 +52,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private var locationList = mutableListOf<LatLng>()
     private var polylineList = mutableListOf<Polyline>()
     private var markerList = mutableListOf<Marker>()
-    private var startTime = 0L
-    private var stopTime = 0L
     private var distance = 0.0
+    private var time = 0.0
     val started = MutableLiveData(false)
 
     override fun onCreateView(
@@ -118,15 +115,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
                 followPosition()
             }
         }
-        TrackerService.startTime.observe(viewLifecycleOwner) {
-            startTime = it
-        }
-        TrackerService.stopTime.observe(viewLifecycleOwner) {
-            stopTime = it
-            if (stopTime != 0L) {
-                showBiggerPicture()
-                displayResults()
-            }
+        TrackerService.time.observe(viewLifecycleOwner) {
+            time = it
         }
         TrackerService.started.observe(viewLifecycleOwner) {
             started.value = it
@@ -180,12 +170,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
                 .position(position)
                 .zIndex(1f)
                 .icon(
-                fromVectorToBitmap(
-                    resources,
-                    drawable,
-                    Color.parseColor("#000000")
+                    fromVectorToBitmap(
+                        resources,
+                        drawable,
+                        Color.parseColor("#000000")
+                    )
                 )
-            )
         )
         markerList.add(marker!!)
     }
@@ -193,7 +183,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private fun displayResults() {
         val result = Result(
             formatDistance(distance),
-            calculateElapsedTime(startTime, stopTime)
+            getTimerStringFromTime(time),
+            TrackerService.date.value!!
         )
         lifecycleScope.launch {
             delay(2500L)
@@ -227,6 +218,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         binding.stopBtn.hide()
         binding.startBtn.show()
         map.isMyLocationEnabled = true
+        showBiggerPicture()
+        displayResults()
     }
 
     private fun onResetButtonClicked() {
@@ -261,7 +254,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             }
 
             override fun onFinish() {
-                sendActionCommandToService(ACTION_SERVICE_START)
+                sendActionCommandToService(TRACKER_SERVICE_START)
                 binding.timerTextView.hide()
             }
         }
@@ -293,7 +286,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
     private fun stopForegroundService() {
         binding.startBtn.disable()
-        sendActionCommandToService(ACTION_SERVICE_STOP)
+        sendActionCommandToService(TRACKER_SERVICE_STOP)
     }
 
     private fun sendActionCommandToService(action: String) {
@@ -305,7 +298,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             requireContext().startService(this)
         }
     }
-
 
     override fun onMyLocationButtonClick(): Boolean {
         binding.hintTextView.animate().alpha(0f).duration = 1500

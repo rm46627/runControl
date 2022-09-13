@@ -14,16 +14,19 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
 import com.example.runcontrol.ui.maps.MapUtil.calculateDistance
 import com.example.runcontrol.ui.maps.MapUtil.formatDistance
-import com.example.runcontrol.util.Constants.ACTION_SERVICE_START
-import com.example.runcontrol.util.Constants.ACTION_SERVICE_STOP
+import com.example.runcontrol.ui.maps.MapUtil.getTimerStringFromTime
 import com.example.runcontrol.util.Constants.LOCATION_FASTEST_UPDATE_INTERVAL
 import com.example.runcontrol.util.Constants.LOCATION_UPDATE_INTERVAL
 import com.example.runcontrol.util.Constants.NOTIFICATION_CHANNEL_ID
 import com.example.runcontrol.util.Constants.NOTIFICATION_CHANNEL_NAME
 import com.example.runcontrol.util.Constants.NOTIFICATION_ID
+import com.example.runcontrol.util.Constants.TRACKER_SERVICE_START
+import com.example.runcontrol.util.Constants.TRACKER_SERVICE_STOP
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.DateFormat.getDateTimeInstance
+import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -35,21 +38,21 @@ class TrackerService: LifecycleService() {
     lateinit var notificationManager: NotificationManager
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private val timer = Timer()
 
     companion object {
         val started = MutableLiveData<Boolean>()
-        val startTime = MutableLiveData<Long>()
-        val stopTime = MutableLiveData<Long>()
         val distance = MutableLiveData<Double>()
+        val time = MutableLiveData<Double>()
+        val date = MutableLiveData<String>()
         val locationList = MutableLiveData<MutableList<LatLng>>()
     }
 
     private fun setInitialValues() {
         started.postValue(false)
         locationList.postValue(mutableListOf())
-        startTime.postValue(0L)
-        stopTime.postValue(0L)
         distance.postValue((0.0))
+        time.postValue((0.0))
     }
 
     private val locationCallback = object : LocationCallback(){
@@ -62,14 +65,15 @@ class TrackerService: LifecycleService() {
                 }
             }
         }
-    }
 
-    private fun updateLocationList(location: Location){
-        val newLatLng = LatLng(location.latitude, location.longitude)
-        locationList.value?.apply{
-            add(newLatLng)
-            locationList.postValue(this )
+        private fun updateLocationList(location: Location){
+            val newLatLng = LatLng(location.latitude, location.longitude)
+            locationList.value?.apply{
+                add(newLatLng)
+                locationList.postValue(this )
+            }
         }
+
     }
 
     override fun onCreate() {
@@ -81,12 +85,11 @@ class TrackerService: LifecycleService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let{
             when(it.action){
-                ACTION_SERVICE_START -> {
+                TRACKER_SERVICE_START -> {
                     started.postValue(true)
                     startForegroundService()
-                    startLocationUpdates()
                 }
-                ACTION_SERVICE_STOP -> {
+                TRACKER_SERVICE_STOP -> {
                     started.postValue(false)
                     stopForegroundService()
                 }
@@ -97,18 +100,21 @@ class TrackerService: LifecycleService() {
     }
 
     private fun startForegroundService() {
+        startLocationUpdates()
+        startTimer()
+        setDate()
         createNotificationChannel()
         startForeground(NOTIFICATION_ID, notification.build())
     }
 
     private fun stopForegroundService() {
         removeLocationUpdates()
+        timer.cancel()
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(
             NOTIFICATION_ID
         )
         stopForeground(true)
         stopSelf()
-        stopTime.postValue(System.currentTimeMillis())
     }
 
     private fun removeLocationUpdates() {
@@ -127,14 +133,33 @@ class TrackerService: LifecycleService() {
             locationCallback,
             Looper.getMainLooper()
         )
-        startTime.postValue(System.currentTimeMillis())
+    }
+
+    private fun startTimer() {
+        timer.scheduleAtFixedRate(
+            object : TimerTask() {
+                override fun run() {
+                    time.value?.apply{
+                        val tt = time.value!! + 1
+                        time.postValue(tt)
+                    }
+                }
+            },
+            0,
+            1000
+        )
+    }
+
+    private fun setDate() {
+        val dateTime = Date(System.currentTimeMillis())
+        date.postValue(getDateTimeInstance().format(dateTime))
     }
 
     private fun updateNotificationPeriodically() {
         notification.apply {
-            setContentTitle("Distance Travelled")
+            setContentTitle("Distance and Time")
             distance.postValue(locationList.value?.let { calculateDistance(it, distance.value!!) })
-            setContentText(formatDistance(distance.value!!))
+            setContentText(formatDistance(distance.value!!) + " " + getTimerStringFromTime(time.value!!))
         }
         notificationManager.notify(NOTIFICATION_ID, notification.build())
     }
@@ -149,4 +174,5 @@ class TrackerService: LifecycleService() {
             notificationManager.createNotificationChannel(channel)
         }
     }
+
 }
