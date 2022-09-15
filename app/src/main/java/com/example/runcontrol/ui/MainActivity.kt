@@ -1,13 +1,14 @@
 package com.example.runcontrol.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.runcontrol.R
-import com.example.runcontrol.util.Permissions.hasLocationPermission
 import com.example.runcontrol.databinding.ActivityMainBinding
-import dagger.hilt.android.AndroidEntryPoint
+import com.example.runcontrol.ui.permission.PermissionFragment
+import com.example.runcontrol.util.Permissions.hasLocationPermission
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
         navController = navHostFragment.navController
 
-        if(hasLocationPermission(this)){
+        if(hasLocationPermission(this) && navHostFragment.childFragmentManager.fragments[0] is PermissionFragment){
             navController.navigate(R.id.action_permissionFragment_to_mapsFragment)
         }
     }

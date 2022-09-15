@@ -15,7 +15,7 @@ import com.google.maps.android.SphericalUtil
 import java.text.DecimalFormat
 import kotlin.math.roundToInt
 
-object MapUtil {
+object MapsUtil {
 
     fun setCameraPosition(location: LatLng): CameraPosition {
         return CameraPosition.Builder()

@@ -12,9 +12,9 @@ import android.os.Looper
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
-import com.example.runcontrol.ui.maps.MapUtil.calculateDistance
-import com.example.runcontrol.ui.maps.MapUtil.formatDistance
-import com.example.runcontrol.ui.maps.MapUtil.getTimerStringFromTime
+import com.example.runcontrol.ui.maps.MapsUtil.calculateDistance
+import com.example.runcontrol.ui.maps.MapsUtil.formatDistance
+import com.example.runcontrol.ui.maps.MapsUtil.getTimerStringFromTime
 import com.example.runcontrol.util.Constants.LOCATION_FASTEST_UPDATE_INTERVAL
 import com.example.runcontrol.util.Constants.LOCATION_UPDATE_INTERVAL
 import com.example.runcontrol.util.Constants.NOTIFICATION_CHANNEL_ID

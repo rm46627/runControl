@@ -11,16 +11,17 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.runcontrol.R
 import com.example.runcontrol.databinding.FragmentMapsBinding
 import com.example.runcontrol.model.Result
 import com.example.runcontrol.service.TrackerService
-import com.example.runcontrol.ui.maps.MapUtil.formatDistance
-import com.example.runcontrol.ui.maps.MapUtil.fromVectorToBitmap
-import com.example.runcontrol.ui.maps.MapUtil.getTimerStringFromTime
-import com.example.runcontrol.ui.maps.MapUtil.setCameraPosition
+import com.example.runcontrol.ui.maps.MapsUtil.formatDistance
+import com.example.runcontrol.ui.maps.MapsUtil.fromVectorToBitmap
+import com.example.runcontrol.ui.maps.MapsUtil.getTimerStringFromTime
+import com.example.runcontrol.ui.maps.MapsUtil.setCameraPosition
 import com.example.runcontrol.util.Constants.TRACKER_SERVICE_START
 import com.example.runcontrol.util.Constants.TRACKER_SERVICE_STOP
 import com.example.runcontrol.util.ExtensionFunctions.disable
@@ -41,6 +42,7 @@ import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+//@AndroidEntryPoint
 class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
     GoogleMap.OnMarkerClickListener,
     EasyPermissions.PermissionCallbacks {
@@ -48,13 +50,18 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private lateinit var binding: FragmentMapsBinding
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var mapsViewModel: MapsViewModel
 
     private var locationList = mutableListOf<LatLng>()
     private var polylineList = mutableListOf<Polyline>()
     private var markerList = mutableListOf<Marker>()
-    private var distance = 0.0
     private var time = 0.0
     val started = MutableLiveData(false)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mapsViewModel = ViewModelProvider(requireActivity())[MapsViewModel::class.java]
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -117,12 +124,15 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         }
         TrackerService.time.observe(viewLifecycleOwner) {
             time = it
+            binding.timerValueTextView.text = getTimerStringFromTime(time)
         }
         TrackerService.started.observe(viewLifecycleOwner) {
             started.value = it
         }
         TrackerService.distance.observe(viewLifecycleOwner) {
-            distance = it
+            mapsViewModel.distance = it
+            mapsViewModel.currentKilometerDistance = it % 1000
+            binding.distanceValueTextView.text = formatDistance(mapsViewModel.distance)
         }
     }
 
@@ -150,53 +160,14 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         }
     }
 
-    private fun showBiggerPicture() {
-        val bounds = LatLngBounds.Builder()
-        for (location in locationList) {
-            bounds.include(location)
-        }
-        map.animateCamera(
-            CameraUpdateFactory.newLatLngBounds(bounds.build(), 100),
-            2000,
-            null
-        )
-        addMarker(locationList.first(), R.drawable.ic_start)
-        addMarker(locationList.last(), R.drawable.ic_finish)
-    }
-
-    private fun addMarker(position: LatLng, drawable: Int) {
-        val marker = map.addMarker(
-            MarkerOptions()
-                .position(position)
-                .zIndex(1f)
-                .icon(
-                    fromVectorToBitmap(
-                        resources,
-                        drawable,
-                        Color.parseColor("#000000")
-                    )
-                )
-        )
-        markerList.add(marker!!)
-    }
-
-    private fun displayResults() {
-        val result = Result(
-            formatDistance(distance),
-            getTimerStringFromTime(time),
-            TrackerService.date.value!!
-        )
+    override fun onMyLocationButtonClick(): Boolean {
+        binding.hintTextView.animate().alpha(0f).duration = 1500
         lifecycleScope.launch {
-            delay(2500L)
-            val directions = MapsFragmentDirections.actionMapsFragmentToResultFragment(result)
-            findNavController().navigate(directions)
-            binding.startBtn.apply {
-                hide()
-                enable()
-            }
-            binding.stopBtn.hide()
-            binding.resetBtn.show()
+            delay(2500)
+            binding.hintTextView.hide()
+            binding.startBtn.show()
         }
+        return false
     }
 
     @SuppressLint("MissingPermission")
@@ -210,22 +181,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         } else {
             requestBackgroundLocationPermission(this)
         }
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun onStopButtonClicked() {
-        stopForegroundService()
-        binding.stopBtn.hide()
-        binding.startBtn.show()
-        map.isMyLocationEnabled = true
-        showBiggerPicture()
-        displayResults()
-    }
-
-    private fun onResetButtonClicked() {
-        mapReset()
-        binding.resetBtn.hide()
-        binding.startBtn.show()
     }
 
     private fun startCountDown() {
@@ -259,6 +214,52 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             }
         }
         timer.start()
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun onStopButtonClicked() {
+        stopForegroundService()
+        binding.stopBtn.hide()
+        binding.startBtn.show()
+        map.isMyLocationEnabled = true
+        showBiggerPicture()
+        displayResults()
+    }
+
+    private fun showBiggerPicture() {
+        val bounds = LatLngBounds.Builder()
+        for (location in locationList) {
+            bounds.include(location)
+        }
+        map.animateCamera(
+            CameraUpdateFactory.newLatLngBounds(bounds.build(), 100),
+            2000,
+            null
+        )
+        addMarker(locationList.first(), R.drawable.ic_start)
+        addMarker(locationList.last(), R.drawable.ic_finish)
+    }
+
+    private fun addMarker(position: LatLng, drawable: Int) {
+        val marker = map.addMarker(
+            MarkerOptions()
+                .position(position)
+                .zIndex(1f)
+                .icon(
+                    fromVectorToBitmap(
+                        resources,
+                        drawable,
+                        Color.parseColor("#000000")
+                    )
+                )
+        )
+        markerList.add(marker!!)
+    }
+
+    private fun onResetButtonClicked() {
+        mapReset()
+        binding.resetBtn.hide()
+        binding.startBtn.show()
     }
 
     @SuppressLint("MissingPermission")
@@ -299,22 +300,31 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         }
     }
 
-    override fun onMyLocationButtonClick(): Boolean {
-        binding.hintTextView.animate().alpha(0f).duration = 1500
-        lifecycleScope.launch {
-            delay(2500)
-            binding.hintTextView.hide()
-            binding.startBtn.show()
-        }
-        return false
-    }
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    }
+
+    private fun displayResults() {
+        val result = Result(
+            formatDistance(mapsViewModel.distance),
+            getTimerStringFromTime(time),
+            TrackerService.date.value!!
+        )
+        lifecycleScope.launch {
+            delay(2500L)
+            val directions = MapsFragmentDirections.actionMapsFragmentToResultFragment(result)
+            findNavController().navigate(directions)
+            binding.startBtn.apply {
+                hide()
+                enable()
+            }
+            binding.stopBtn.hide()
+            binding.resetBtn.show()
+        }
     }
 
     override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
