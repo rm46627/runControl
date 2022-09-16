@@ -13,7 +13,6 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
 import java.text.DecimalFormat
-import kotlin.math.roundToInt
 
 object MapsUtil {
 
@@ -33,11 +32,10 @@ object MapsUtil {
 //        return "$hours:$minutes:$seconds"
     }
 
-    fun getTimerStringFromTime(time: Double): String {
-        val resultInt = time.roundToInt()
-        val hours = resultInt / (60 * 60)
-        val minutes = (resultInt / 60) % 60
-        val seconds = resultInt % 60
+    fun getTimerStringFromTime(time: Int): String {
+        val hours = time / (60 * 60)
+        val minutes = (time / 60) % 60
+        val seconds = time % 60
         val out = String.format("%02d:%02d:%02d", hours, minutes, seconds)
         Log.d("Timer", out)
         return out
@@ -58,6 +56,13 @@ object MapsUtil {
             return "${DecimalFormat("#.##").format(distance / 1000)} km"
         }
         return "${distance.toInt()} m"
+    }
+
+    fun formatAvgPace(pace: Double): String {
+        val minutes = ((pace / 60) % 60).toInt()
+        val seconds = (pace % 60).toInt()
+        return String.format("%02d:%02d", minutes, seconds)
+
     }
 
     fun fromVectorToBitmap(resources: Resources, id: Int, color: Int): BitmapDescriptor {

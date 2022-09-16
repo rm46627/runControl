@@ -12,7 +12,7 @@ import android.os.Looper
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
-import com.example.runcontrol.ui.maps.MapsUtil.calculateDistance
+import com.example.runcontrol.ui.maps.MapsUtil
 import com.example.runcontrol.ui.maps.MapsUtil.formatDistance
 import com.example.runcontrol.ui.maps.MapsUtil.getTimerStringFromTime
 import com.example.runcontrol.util.Constants.LOCATION_FASTEST_UPDATE_INTERVAL
@@ -40,19 +40,26 @@ class TrackerService: LifecycleService() {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private val timer = Timer()
 
+    private var currentMeters = 0
+
     companion object {
         val started = MutableLiveData<Boolean>()
         val distance = MutableLiveData<Double>()
-        val time = MutableLiveData<Double>()
+        val time = MutableLiveData<Int>()
         val date = MutableLiveData<String>()
         val locationList = MutableLiveData<MutableList<LatLng>>()
+        val kilometerReached = MutableLiveData<Boolean>()
+        val paceTimes = MutableLiveData<MutableList<Int>>()
+        val avgPaceTime = MutableLiveData<Double>()
     }
 
     private fun setInitialValues() {
         started.postValue(false)
         locationList.postValue(mutableListOf())
         distance.postValue((0.0))
-        time.postValue((0.0))
+        time.postValue((0))
+        kilometerReached.postValue(false)
+        paceTimes.postValue(mutableListOf())
     }
 
     private val locationCallback = object : LocationCallback(){
@@ -61,6 +68,7 @@ class TrackerService: LifecycleService() {
             result.locations.let { locations ->
                 for(location in locations){
                     updateLocationList(location)
+                    updateDistance()
                     updateNotificationPeriodically()
                 }
             }
@@ -155,11 +163,50 @@ class TrackerService: LifecycleService() {
         date.postValue(getDateTimeInstance().format(dateTime))
     }
 
+    private fun updateDistance() {
+        distance.postValue(locationList.value?.let {
+            MapsUtil.calculateDistance(it, distance.value!!)
+        })
+        val meters = (distance.value!! % 1000).toInt()
+        if (meters >= currentMeters){
+            currentMeters = meters
+        } else {
+            currentMeters = 0
+            nextKilometer()
+        }
+    }
+
+    private fun nextKilometer() {
+        updateAvgPace()
+        kilometerReached.postValue(true)
+    }
+
+    private fun updateAvgPace() {
+        paceTimes.value?.apply {
+            if (this.isEmpty()) {
+                val t = time.value!!
+                add(t)
+                paceTimes.postValue(this)
+                avgPaceTime.postValue(t.toDouble())
+            } else {
+                var tsum = 0
+                this.let { times ->
+                    for (t in times) {
+                        tsum += t
+                    }
+                }
+                add(time.value!! - tsum)
+                paceTimes.postValue(this)
+                avgPaceTime.postValue((tsum.toDouble() + this.last().toDouble())/this.size)
+            }
+        }
+    }
+
     private fun updateNotificationPeriodically() {
         notification.apply {
-            setContentTitle("Distance and Time")
-            distance.postValue(locationList.value?.let { calculateDistance(it, distance.value!!) })
-            setContentText(formatDistance(distance.value!!) + " " + getTimerStringFromTime(time.value!!))
+            setContentTitle("Distance\tTime")
+//            distance.postValue(locationList.value?.let { calculateDistance(it, distance.value!!) })
+            setContentText(formatDistance(distance.value!!) + "\t" + getTimerStringFromTime(time.value!!))
         }
         notificationManager.notify(NOTIFICATION_ID, notification.build())
     }

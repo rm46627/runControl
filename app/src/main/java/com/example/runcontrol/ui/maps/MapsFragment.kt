@@ -19,6 +19,7 @@ import com.example.runcontrol.databinding.FragmentMapsBinding
 import com.example.runcontrol.model.Result
 import com.example.runcontrol.service.TrackerService
 import com.example.runcontrol.ui.maps.MapsUtil.formatDistance
+import com.example.runcontrol.ui.maps.MapsUtil.formatAvgPace
 import com.example.runcontrol.ui.maps.MapsUtil.fromVectorToBitmap
 import com.example.runcontrol.ui.maps.MapsUtil.getTimerStringFromTime
 import com.example.runcontrol.ui.maps.MapsUtil.setCameraPosition
@@ -55,7 +56,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private var locationList = mutableListOf<LatLng>()
     private var polylineList = mutableListOf<Polyline>()
     private var markerList = mutableListOf<Marker>()
-    private var time = 0.0
     val started = MutableLiveData(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,16 +123,16 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             }
         }
         TrackerService.time.observe(viewLifecycleOwner) {
-            time = it
-            binding.timerValueTextView.text = getTimerStringFromTime(time)
+            binding.timerValueTextView.text = getTimerStringFromTime(it)
         }
         TrackerService.started.observe(viewLifecycleOwner) {
             started.value = it
         }
         TrackerService.distance.observe(viewLifecycleOwner) {
-            mapsViewModel.distance = it
-            mapsViewModel.currentKilometerDistance = it % 1000
-            binding.distanceValueTextView.text = formatDistance(mapsViewModel.distance)
+            binding.distanceValueTextView.text = formatDistance(it)
+        }
+        TrackerService.avgPaceTime.observe(viewLifecycleOwner) {
+            binding.paceValueTextView.text = formatAvgPace(it)
         }
     }
 
@@ -310,8 +310,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
     private fun displayResults() {
         val result = Result(
-            formatDistance(mapsViewModel.distance),
-            getTimerStringFromTime(time),
+            formatDistance(TrackerService.distance.value!!),
+            getTimerStringFromTime(TrackerService.time.value!!),
             TrackerService.date.value!!
         )
         lifecycleScope.launch {
