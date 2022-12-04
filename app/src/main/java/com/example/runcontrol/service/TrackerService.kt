@@ -9,6 +9,7 @@ import android.content.Intent
 import android.location.Location
 import android.os.Build
 import android.os.Looper
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
@@ -44,6 +45,7 @@ class TrackerService: LifecycleService() {
 
     companion object {
         val started = MutableLiveData<Boolean>()
+        // distance in meters
         val distance = MutableLiveData<Double>()
         val time = MutableLiveData<Int>()
         val date = MutableLiveData<String>()
@@ -51,6 +53,7 @@ class TrackerService: LifecycleService() {
         val kilometerReached = MutableLiveData<Boolean>()
         val paceTimes = MutableLiveData<MutableList<Int>>()
         val avgPaceTime = MutableLiveData<Double>()
+        val burnedKcal = MutableLiveData<Int>()
     }
 
     private fun setInitialValues() {
@@ -70,6 +73,8 @@ class TrackerService: LifecycleService() {
                     updateLocationList(location)
                     updateDistance()
                     updateNotificationPeriodically()
+                    updateKcal()
+                    Log.d("dist", "$distance")
                 }
             }
         }
@@ -118,6 +123,7 @@ class TrackerService: LifecycleService() {
     private fun stopForegroundService() {
         removeLocationUpdates()
         timer.cancel()
+        time.postValue(0)
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(
             NOTIFICATION_ID
         )
@@ -202,11 +208,14 @@ class TrackerService: LifecycleService() {
         }
     }
 
+    private fun updateKcal() {
+        burnedKcal.postValue((distance.value!! * 0.001 * 62 * 1.036).toInt())
+    }
+
     private fun updateNotificationPeriodically() {
         notification.apply {
-            setContentTitle("Distance\tTime")
-//            distance.postValue(locationList.value?.let { calculateDistance(it, distance.value!!) })
-            setContentText(formatDistance(distance.value!!) + "\t" + getTimerStringFromTime(time.value!!))
+            setContentTitle("Your running session")
+            setContentText(formatDistance(distance.value!!) + "\n" + getTimerStringFromTime(time.value!!))
         }
         notificationManager.notify(NOTIFICATION_ID, notification.build())
     }

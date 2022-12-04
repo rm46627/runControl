@@ -18,8 +18,8 @@ import com.example.runcontrol.R
 import com.example.runcontrol.databinding.FragmentMapsBinding
 import com.example.runcontrol.model.Result
 import com.example.runcontrol.service.TrackerService
-import com.example.runcontrol.ui.maps.MapsUtil.formatDistance
 import com.example.runcontrol.ui.maps.MapsUtil.formatAvgPace
+import com.example.runcontrol.ui.maps.MapsUtil.formatDistance
 import com.example.runcontrol.ui.maps.MapsUtil.fromVectorToBitmap
 import com.example.runcontrol.ui.maps.MapsUtil.getTimerStringFromTime
 import com.example.runcontrol.ui.maps.MapsUtil.setCameraPosition
@@ -134,6 +134,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         TrackerService.avgPaceTime.observe(viewLifecycleOwner) {
             binding.paceValueTextView.text = formatAvgPace(it)
         }
+        TrackerService.burnedKcal.observe(viewLifecycleOwner) {
+            binding.caloriesValueTextView.text = it.toString()
+        }
     }
 
     private fun drawPolyline() {
@@ -177,7 +180,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             binding.startBtn.disable()
             binding.startBtn.hide()
             binding.stopBtn.show()
-            map.isMyLocationEnabled = false
         } else {
             requestBackgroundLocationPermission(this)
         }
@@ -221,7 +223,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         stopForegroundService()
         binding.stopBtn.hide()
         binding.startBtn.show()
-        map.isMyLocationEnabled = true
         showBiggerPicture()
         displayResults()
     }
@@ -283,6 +284,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         }
         locationList.clear()
         markerList.clear()
+        binding.paceValueTextView.text = getString(R.string.pace_zero_text_value)
+        binding.timerValueTextView.text = getString(R.string.timer_zero_text_value)
     }
 
     private fun stopForegroundService() {
