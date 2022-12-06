@@ -16,4 +16,7 @@ object Constants {
 
     const val LOCATION_UPDATE_INTERVAL = 4000L
     const val LOCATION_FASTEST_UPDATE_INTERVAL = 2000L
+
+    const val DATABASE_NAME = "RunControlDB"
+    const val RUN_TABLE = "run_table"
 }

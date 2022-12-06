@@ -19,7 +19,7 @@
     <fragment
         android:id="@+id/mapsFragment"
         android:name="com.example.runcontrol.ui.maps.MapsFragment"
-        android:label="fragment_maps"
+        android:label="Run"
         tools:layout="@layout/fragment_maps" >
         <action
             android:id="@+id/action_mapsFragment_to_resultFragment"
@@ -39,4 +39,11 @@
             android:name="result"
             app:argType="com.example.runcontrol.model.Result" />
     </dialog>
+
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.example.runcontrol.ui.history.HistoryFragment"
+        android:label="Control"
+        tools:layout="@layout/fragment_history" >
+    </fragment>
 </navigation>

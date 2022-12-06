@@ -23,4 +23,7 @@
     <string name="date_textView">Started</string>
     <string name="pace_zero_text_value">00:00</string>
     <string name="timer_zero_text_value">00:00:00</string>
+    <string name="burned_kcal_textView">Burned kcal</string>
+    <string name="history_fragment_name">Control</string>
+    <string name="map_fragment_name">Run</string>
 </resources>
