@@ -13,16 +13,16 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
+import com.example.runcontrol.Constants.LOCATION_FASTEST_UPDATE_INTERVAL
+import com.example.runcontrol.Constants.LOCATION_UPDATE_INTERVAL
+import com.example.runcontrol.Constants.NOTIFICATION_CHANNEL_ID
+import com.example.runcontrol.Constants.NOTIFICATION_CHANNEL_NAME
+import com.example.runcontrol.Constants.NOTIFICATION_ID
+import com.example.runcontrol.Constants.TRACKER_SERVICE_START
+import com.example.runcontrol.Constants.TRACKER_SERVICE_STOP
 import com.example.runcontrol.ui.maps.MapsUtil
 import com.example.runcontrol.ui.maps.MapsUtil.formatDistance
 import com.example.runcontrol.ui.maps.MapsUtil.getTimerStringFromTime
-import com.example.runcontrol.util.Constants.LOCATION_FASTEST_UPDATE_INTERVAL
-import com.example.runcontrol.util.Constants.LOCATION_UPDATE_INTERVAL
-import com.example.runcontrol.util.Constants.NOTIFICATION_CHANNEL_ID
-import com.example.runcontrol.util.Constants.NOTIFICATION_CHANNEL_NAME
-import com.example.runcontrol.util.Constants.NOTIFICATION_ID
-import com.example.runcontrol.util.Constants.TRACKER_SERVICE_START
-import com.example.runcontrol.util.Constants.TRACKER_SERVICE_STOP
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,8 +45,7 @@ class TrackerService: LifecycleService() {
 
     companion object {
         val started = MutableLiveData<Boolean>()
-        // distance in meters
-        val distance = MutableLiveData<Double>()
+        val distanceMeters = MutableLiveData<Double>()
         val time = MutableLiveData<Int>()
         val date = MutableLiveData<String>()
         val locationList = MutableLiveData<MutableList<LatLng>>()
@@ -59,7 +58,7 @@ class TrackerService: LifecycleService() {
     private fun setInitialValues() {
         started.postValue(false)
         locationList.postValue(mutableListOf())
-        distance.postValue((0.0))
+        distanceMeters.postValue((0.0))
         time.postValue((0))
         kilometerReached.postValue(false)
         paceTimes.postValue(mutableListOf())
@@ -74,7 +73,7 @@ class TrackerService: LifecycleService() {
                     updateDistance()
                     updateNotificationPeriodically()
                     updateKcal()
-                    Log.d("dist", "$distance")
+                    Log.d("dist", "$distanceMeters")
                 }
             }
         }
@@ -170,10 +169,10 @@ class TrackerService: LifecycleService() {
     }
 
     private fun updateDistance() {
-        distance.postValue(locationList.value?.let {
-            MapsUtil.calculateDistance(it, distance.value!!)
+        distanceMeters.postValue(locationList.value?.let {
+            MapsUtil.calculateDistance(it, distanceMeters.value!!)
         })
-        val meters = (distance.value!! % 1000).toInt()
+        val meters = (distanceMeters.value!! % 1000).toInt()
         if (meters >= currentMeters){
             currentMeters = meters
         } else {
@@ -209,13 +208,13 @@ class TrackerService: LifecycleService() {
     }
 
     private fun updateKcal() {
-        burnedKcal.postValue((distance.value!! * 0.001 * 62 * 1.036).toInt())
+        burnedKcal.postValue((distanceMeters.value!! * 0.001 * 62 * 1.036).toInt())
     }
 
     private fun updateNotificationPeriodically() {
         notification.apply {
             setContentTitle("Your running session")
-            setContentText(formatDistance(distance.value!!) + "\n" + getTimerStringFromTime(time.value!!))
+            setContentText(formatDistance(distanceMeters.value!!) + "\n" + getTimerStringFromTime(time.value!!))
         }
         notificationManager.notify(NOTIFICATION_ID, notification.build())
     }

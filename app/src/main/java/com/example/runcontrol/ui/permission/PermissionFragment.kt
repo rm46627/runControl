@@ -1,14 +1,14 @@
 package com.example.runcontrol.ui.permission
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.runcontrol.Permissions.hasLocationPermission
+import com.example.runcontrol.Permissions.requestLocationPermission
 import com.example.runcontrol.R
-import com.example.runcontrol.util.Permissions.hasLocationPermission
-import com.example.runcontrol.util.Permissions.requestLocationPermission
 import com.example.runcontrol.databinding.FragmentPermissionBinding
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog

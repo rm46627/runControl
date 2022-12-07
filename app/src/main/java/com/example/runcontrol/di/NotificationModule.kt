@@ -9,8 +9,8 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.example.runcontrol.ui.MainActivity
 import com.example.runcontrol.R
-import com.example.runcontrol.util.Constants.NOTIFICATION_CHANNEL_ID
-import com.example.runcontrol.util.Constants.PENDING_INTENT_REQUEST_CODE
+import com.example.runcontrol.Constants.NOTIFICATION_CHANNEL_ID
+import com.example.runcontrol.Constants.PENDING_INTENT_REQUEST_CODE
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

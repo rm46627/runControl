@@ -1,14 +1,14 @@
-package com.example.foodfoodapp.data.database
+package com.example.runcontrol.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.foodfoodapp.data.database.dao.RunDao
-import com.example.foodfoodapp.data.database.entities.RunEntity
+import com.example.runcontrol.database.dao.RunDao
+import com.example.runcontrol.database.entities.RunEntity
 
 @Database(
     entities = [RunEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(TypeConverter::class)

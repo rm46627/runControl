@@ -1,4 +1,4 @@
-package com.example.runcontrol.util
+package com.example.runcontrol
 
 object Constants {
 

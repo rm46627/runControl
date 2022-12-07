@@ -26,4 +26,6 @@
     <string name="burned_kcal_textView">Burned kcal</string>
     <string name="history_fragment_name">Control</string>
     <string name="map_fragment_name">Run</string>
+    <string name="save_btn">Save</string>
+    <string name="result_btn">Result</string>
 </resources>

@@ -1,8 +1,8 @@
-package com.example.runcontrol.util
+package com.example.runcontrol.extensionFunctions
 
 import android.view.View
 
-object ExtensionFunctions {
+object View {
 
     fun View.show(){
         this.visibility = View.VISIBLE

@@ -11,26 +11,26 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.runcontrol.Constants.TRACKER_SERVICE_START
+import com.example.runcontrol.Constants.TRACKER_SERVICE_STOP
+import com.example.runcontrol.Permissions.hasBackgroundLocationPermission
+import com.example.runcontrol.Permissions.requestBackgroundLocationPermission
 import com.example.runcontrol.R
+import com.example.runcontrol.database.entities.RunEntity
 import com.example.runcontrol.databinding.FragmentMapsBinding
-import com.example.runcontrol.model.Result
+import com.example.runcontrol.extensionFunctions.NavController.safeNavigate
+import com.example.runcontrol.extensionFunctions.View.disable
+import com.example.runcontrol.extensionFunctions.View.enable
+import com.example.runcontrol.extensionFunctions.View.hide
+import com.example.runcontrol.extensionFunctions.View.show
 import com.example.runcontrol.service.TrackerService
 import com.example.runcontrol.ui.maps.MapsUtil.formatAvgPace
 import com.example.runcontrol.ui.maps.MapsUtil.formatDistance
 import com.example.runcontrol.ui.maps.MapsUtil.fromVectorToBitmap
 import com.example.runcontrol.ui.maps.MapsUtil.getTimerStringFromTime
 import com.example.runcontrol.ui.maps.MapsUtil.setCameraPosition
-import com.example.runcontrol.util.Constants.TRACKER_SERVICE_START
-import com.example.runcontrol.util.Constants.TRACKER_SERVICE_STOP
-import com.example.runcontrol.util.ExtensionFunctions.disable
-import com.example.runcontrol.util.ExtensionFunctions.enable
-import com.example.runcontrol.util.ExtensionFunctions.hide
-import com.example.runcontrol.util.ExtensionFunctions.show
-import com.example.runcontrol.util.Permissions.hasBackgroundLocationPermission
-import com.example.runcontrol.util.Permissions.requestBackgroundLocationPermission
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -51,7 +51,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private lateinit var binding: FragmentMapsBinding
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private lateinit var mapsViewModel: MapsViewModel
 
     private var locationList = mutableListOf<LatLng>()
     private var polylineList = mutableListOf<Polyline>()
@@ -60,7 +59,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mapsViewModel = ViewModelProvider(requireActivity())[MapsViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -80,6 +78,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         }
         binding.resetBtn.setOnClickListener {
             onResetButtonClicked()
+        }
+        binding.resultBtn.setOnClickListener {
+            displayResults(false)
         }
 
         fusedLocationProviderClient =
@@ -128,7 +129,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         TrackerService.started.observe(viewLifecycleOwner) {
             started.value = it
         }
-        TrackerService.distance.observe(viewLifecycleOwner) {
+        TrackerService.distanceMeters.observe(viewLifecycleOwner) {
             binding.distanceValueTextView.text = formatDistance(it)
         }
         TrackerService.avgPaceTime.observe(viewLifecycleOwner) {
@@ -224,7 +225,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         binding.stopBtn.hide()
         binding.startBtn.show()
         showBiggerPicture()
-        displayResults()
+        displayResults(true)
     }
 
     private fun showBiggerPicture() {
@@ -260,6 +261,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private fun onResetButtonClicked() {
         mapReset()
         binding.resetBtn.hide()
+        binding.resultBtn.hide()
         binding.startBtn.show()
     }
 
@@ -284,8 +286,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         }
         locationList.clear()
         markerList.clear()
+        binding.distanceValueTextView.text = "0 m"
         binding.paceValueTextView.text = getString(R.string.pace_zero_text_value)
         binding.timerValueTextView.text = getString(R.string.timer_zero_text_value)
+        binding.caloriesValueTextView.text = "0"
     }
 
     private fun stopForegroundService() {
@@ -311,22 +315,26 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
-    private fun displayResults() {
-        val result = Result(
-            formatDistance(TrackerService.distance.value!!),
-            getTimerStringFromTime(TrackerService.time.value!!),
-            TrackerService.date.value!!
+    private fun displayResults(delay: Boolean) {
+        val runEntity = RunEntity(
+            0,
+            TrackerService.date.value!!,
+            TrackerService.time.value!!,
+            TrackerService.distanceMeters.value!!,
+            TrackerService.burnedKcal.value!!,
+            locationList
         )
         lifecycleScope.launch {
-            delay(2500L)
-            val directions = MapsFragmentDirections.actionMapsFragmentToResultFragment(result)
-            findNavController().navigate(directions)
+            delay( if (delay) 2500L else 0L )
+            val directions = MapsFragmentDirections.actionMapsFragmentToResultFragment(runEntity)
+            findNavController().safeNavigate(directions)
             binding.startBtn.apply {
                 hide()
                 enable()
             }
             binding.stopBtn.hide()
             binding.resetBtn.show()
+            binding.resultBtn.show()
         }
     }
 

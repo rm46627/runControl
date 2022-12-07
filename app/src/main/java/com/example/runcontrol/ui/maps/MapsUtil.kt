@@ -62,7 +62,6 @@ object MapsUtil {
         val minutes = ((pace / 60) % 60).toInt()
         val seconds = (pace % 60).toInt()
         return String.format("%02d:%02d", minutes, seconds)
-
     }
 
     fun fromVectorToBitmap(resources: Resources, id: Int, color: Int): BitmapDescriptor {

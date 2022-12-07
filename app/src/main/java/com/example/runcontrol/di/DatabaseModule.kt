@@ -2,8 +2,8 @@ package com.example.runcontrol.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.foodfoodapp.data.database.Database
-import com.example.runcontrol.util.Constants.DATABASE_NAME
+import com.example.runcontrol.database.Database
+import com.example.runcontrol.Constants.DATABASE_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
