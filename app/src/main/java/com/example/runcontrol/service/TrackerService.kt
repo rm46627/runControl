@@ -53,6 +53,10 @@ class TrackerService: LifecycleService() {
         val paceTimes = MutableLiveData<MutableList<Int>>()
         val avgPaceTime = MutableLiveData<Double>()
         val burnedKcal = MutableLiveData<Int>()
+
+        fun timerReset() {
+            time.postValue(0)
+        }
     }
 
     private fun setInitialValues() {
@@ -122,7 +126,6 @@ class TrackerService: LifecycleService() {
     private fun stopForegroundService() {
         removeLocationUpdates()
         timer.cancel()
-        time.postValue(0)
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(
             NOTIFICATION_ID
         )

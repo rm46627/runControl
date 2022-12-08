@@ -6,11 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.example.runcontrol.R
 import com.example.runcontrol.databinding.FragmentResultBinding
-import com.example.runcontrol.ui.MainViewModel
+import com.example.runcontrol.extensionFunctions.View.disable
 import com.example.runcontrol.ui.maps.MapsUtil.formatDistance
 import com.example.runcontrol.ui.maps.MapsUtil.getTimerStringFromTime
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -21,7 +22,12 @@ class ResultFragment : BottomSheetDialogFragment() {
 
     private val args: ResultFragmentArgs by navArgs()
     private lateinit var binding: FragmentResultBinding
-    private val mainViewModel: MainViewModel by viewModels()
+    private lateinit var resultViewModel: ResultViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        resultViewModel = ViewModelProvider(requireActivity())[ResultViewModel::class.java]
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,11 +46,21 @@ class ResultFragment : BottomSheetDialogFragment() {
             saveResult()
         }
 
+        if (resultViewModel.dateStarted != args.result.date) {
+            resultViewModel.dateStarted = args.result.date
+            resultViewModel.wasSaved = false
+        }
+
+        if (resultViewModel.wasSaved) {
+            binding.saveBtn.disable()
+            binding.saveBtn.text = getString(R.string.save_btn_saved)
+        }
+
         return binding.root
     }
 
     private fun saveResult() {
-        mainViewModel.insertRun(args.result)
+        resultViewModel.insertRun(args.result)
         val action = ResultFragmentDirections.actionResultFragmentToMapsFragment()
         findNavController().navigate(action)
         Toast.makeText(

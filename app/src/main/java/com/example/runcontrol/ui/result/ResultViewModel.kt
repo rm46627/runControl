@@ -1,4 +1,4 @@
-package com.example.runcontrol.ui
+package com.example.runcontrol.ui.result
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -13,18 +13,19 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class ResultViewModel @Inject constructor(
     private val repository: Repository,
     application: Application
 ) : AndroidViewModel(application) {
 
     val readRuns: LiveData<List<RunEntity>> = repository.local.readRuns().asLiveData()
+    var dateStarted = ""
+    var wasSaved = false
 
     fun insertRun(runEntity: RunEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.local.insertRun(runEntity)
         }
+        wasSaved = true
     }
-
-
 }

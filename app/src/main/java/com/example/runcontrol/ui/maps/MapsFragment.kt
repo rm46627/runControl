@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.runcontrol.Constants.TRACKER_SERVICE_START
@@ -40,10 +40,11 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-//@AndroidEntryPoint
+@AndroidEntryPoint
 class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
     GoogleMap.OnMarkerClickListener,
     EasyPermissions.PermissionCallbacks {
@@ -55,10 +56,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private var locationList = mutableListOf<LatLng>()
     private var polylineList = mutableListOf<Polyline>()
     private var markerList = mutableListOf<Marker>()
-    val started = MutableLiveData(false)
+
+    private lateinit var mapsViewModel: MapsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mapsViewModel = ViewModelProvider(requireActivity())[MapsViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -68,7 +71,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     ): View {
         binding = FragmentMapsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
-        binding.tracking = this
 
         binding.startBtn.setOnClickListener {
             onStartButtonClicked()
@@ -95,6 +97,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         mapFragment?.getMapAsync(this)
     }
 
+    override fun onStart() {
+        super.onStart()
+    }
+
     @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
@@ -110,6 +116,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             isScrollGesturesEnabled = false
         }
         observeTrackerService()
+        if (mapsViewModel.currentRunState == RunStatus.ENDED) {
+            binding.hintTextView.hide()
+            binding.resetBtn.show()
+            binding.resultBtn.show()
+            showBiggerPicture()
+        }
     }
 
     private fun observeTrackerService() {
@@ -127,7 +139,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             binding.timerValueTextView.text = getTimerStringFromTime(it)
         }
         TrackerService.started.observe(viewLifecycleOwner) {
-            started.value = it
+            if(it) binding.stopBtn.show()
+            else binding.stopBtn.hide()
         }
         TrackerService.distanceMeters.observe(viewLifecycleOwner) {
             binding.distanceValueTextView.text = formatDistance(it)
@@ -184,6 +197,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         } else {
             requestBackgroundLocationPermission(this)
         }
+        mapsViewModel.started()
     }
 
     private fun startCountDown() {
@@ -226,6 +240,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         binding.startBtn.show()
         showBiggerPicture()
         displayResults(true)
+        mapsViewModel.ended()
     }
 
     private fun showBiggerPicture() {
@@ -263,6 +278,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         binding.resetBtn.hide()
         binding.resultBtn.hide()
         binding.startBtn.show()
+        mapsViewModel.clean()
     }
 
     @SuppressLint("MissingPermission")
@@ -286,6 +302,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         }
         locationList.clear()
         markerList.clear()
+        TrackerService.timerReset()
         binding.distanceValueTextView.text = "0 m"
         binding.paceValueTextView.text = getString(R.string.pace_zero_text_value)
         binding.timerValueTextView.text = getString(R.string.timer_zero_text_value)

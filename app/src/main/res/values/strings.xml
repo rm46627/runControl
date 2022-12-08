@@ -28,4 +28,5 @@
     <string name="map_fragment_name">Run</string>
     <string name="save_btn">Save</string>
     <string name="result_btn">Result</string>
+    <string name="save_btn_saved">Saved</string>
 </resources>
