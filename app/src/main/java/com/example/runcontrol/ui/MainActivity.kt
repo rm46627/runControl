@@ -1,7 +1,6 @@
 package com.example.runcontrol.ui
 
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -11,6 +10,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.runcontrol.Permissions.hasLocationPermission
 import com.example.runcontrol.R
 import com.example.runcontrol.databinding.ActivityMainBinding
+import com.example.runcontrol.extensionFunctions.View.show
 import com.example.runcontrol.ui.permission.PermissionFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
 
         if(hasLocationPermission(this) && navHostFragment.childFragmentManager.fragments[0] is PermissionFragment){
             navController.navigate(R.id.action_permissionFragment_to_mapsFragment)
-            binding.bottomNavigationView.visibility = View.VISIBLE
+            binding.bottomNavigationView.show()
         }
 
         val appBarConfiguration = AppBarConfiguration(
