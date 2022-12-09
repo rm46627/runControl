@@ -2,8 +2,6 @@ package com.example.runcontrol.ui.result
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.runcontrol.database.Repository
 import com.example.runcontrol.database.entities.RunEntity
@@ -18,7 +16,6 @@ class ResultViewModel @Inject constructor(
     application: Application
 ) : AndroidViewModel(application) {
 
-    val readRuns: LiveData<List<RunEntity>> = repository.local.readRuns().asLiveData()
     var dateStarted = ""
     var wasSaved = false
 

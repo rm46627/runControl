@@ -26,7 +26,7 @@ import com.example.runcontrol.ui.maps.MapsUtil.getTimerStringFromTime
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.AndroidEntryPoint
-import java.text.DateFormat.getDateTimeInstance
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -66,6 +66,7 @@ class TrackerService: LifecycleService() {
         time.postValue((0))
         kilometerReached.postValue(false)
         paceTimes.postValue(mutableListOf())
+        avgPaceTime.postValue(0.0)
     }
 
     private val locationCallback = object : LocationCallback(){
@@ -167,8 +168,9 @@ class TrackerService: LifecycleService() {
     }
 
     private fun setDate() {
-        val dateTime = Date(System.currentTimeMillis())
-        date.postValue(getDateTimeInstance().format(dateTime))
+        val simpleDateFormat = SimpleDateFormat("hh:mm:ss dd/MM/yyyy", Locale.ENGLISH)
+        val time = Date(System.currentTimeMillis())
+        date.postValue(simpleDateFormat.format(time))
     }
 
     private fun updateDistance() {

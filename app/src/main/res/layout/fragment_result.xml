@@ -37,7 +37,7 @@
             app:layout_constraintTop_toBottomOf="@+id/distance_textView" />
 
         <TextView
-            android:id="@+id/time_textView"
+            android:id="@+id/timeValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -58,7 +58,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/time_textView" />
+            app:layout_constraintTop_toBottomOf="@+id/timeValue" />
 
         <TextView
             android:id="@+id/date_textView"

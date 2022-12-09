@@ -44,6 +44,6 @@
         android:id="@+id/historyFragment"
         android:name="com.example.runcontrol.ui.history.HistoryFragment"
         android:label="Control"
-        tools:layout="@layout/fragment_history" >
+        tools:layout="@layout/row_layout_history" >
     </fragment>
 </navigation>

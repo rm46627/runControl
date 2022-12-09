@@ -2,47 +2,81 @@ package com.example.runcontrol.ui.history
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.runcontrol.databinding.FragmentHistoryBinding
-import com.example.runcontrol.ui.history.placeholder.PlaceholderContent.PlaceholderItem
+import com.example.runcontrol.R
+import com.example.runcontrol.RunsDiffUtil
+import com.example.runcontrol.database.entities.RunEntity
+import com.example.runcontrol.databinding.RowLayoutHistoryBinding
+import com.example.runcontrol.ui.maps.MapsUtil
 
-/**
- * [RecyclerView.Adapter] that can display a [PlaceholderItem].
- * TODO: Replace the implementation with code for your data type.
- */
-class HistoryAdapter(
-    private val values: List<PlaceholderItem>
-) : RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
+class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.MyViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    private var runs = emptyList<RunEntity>()
 
-        return ViewHolder(
-            FragmentHistoryBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        )
-
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = values[position]
-        holder.idView.text = item.id
-        holder.contentView.text = item.content
-    }
-
-    override fun getItemCount(): Int = values.size
-
-    inner class ViewHolder(binding: FragmentHistoryBinding) :
+    class MyViewHolder(private val binding: RowLayoutHistoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        val idView: TextView = binding.itemNumber
-        val contentView: TextView = binding.content
 
-        override fun toString(): String {
-            return super.toString() + " '" + contentView.text + "'"
+        fun bind(runEntity: RunEntity) {
+            binding.dateValueTextView.text = runEntity.date
+            binding.timeValueTextView.text = MapsUtil.getTimerStringFromTime(runEntity.time)
+            binding.distanceValueTextView.text = MapsUtil.formatDistance(runEntity.distanceMeters)
+            binding.paceValueTextView.text = MapsUtil.formatAvgPace(runEntity.pace)
+            binding.caloriesValueTextView.text = runEntity.burnedKcal.toString()
+            binding.executePendingBindings()
+        }
+
+        companion object {
+            fun from(parent: ViewGroup): MyViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = RowLayoutHistoryBinding.inflate(layoutInflater, parent, false)
+                return MyViewHolder(binding)
+            }
         }
     }
 
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+        return MyViewHolder.from(parent)
+    }
+
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+        clickAnimationForCard(holder)
+
+        val currentRun = runs[position]
+        holder.bind(currentRun)
+
+        // single click
+        holder.itemView.findViewById<ConstraintLayout>(R.id.runRowLayout).setOnClickListener {
+//            val action =
+//                FavoritesGroupsFragmentDirections.actionFavoritesGroupsFragmentToFavouriteRecipesFragment(
+//                    currentGroup.id, currentGroup.color
+//                )
+//            holder.itemView.findNavController().navigate(action)
+        }
+    }
+
+    private fun clickAnimationForCard(holder: MyViewHolder) {
+        val attrs = intArrayOf(android.R.attr.selectableItemBackgroundBorderless)
+        val typedArray = holder.itemView.context.obtainStyledAttributes(attrs)
+        val selectableItemBackground = typedArray.getResourceId(0, 0)
+        typedArray.recycle()
+        holder.itemView.isClickable = true
+        holder.itemView.isFocusable = true
+//        holder.itemView.foreground = holder.itemView.context.getDrawable(selectableItemBackground)
+        holder.itemView.foreground =
+            AppCompatResources.getDrawable(holder.itemView.context, selectableItemBackground)
+    }
+
+    override fun getItemCount(): Int {
+        return runs.size
+    }
+
+    fun setData(newRunsList: List<RunEntity>) {
+        val runsDiffUtil = RunsDiffUtil(runs, newRunsList)
+        val diffUtilResult = DiffUtil.calculateDiff(runsDiffUtil)
+        runs = newRunsList
+        diffUtilResult.dispatchUpdatesTo(this)
+    }
 }

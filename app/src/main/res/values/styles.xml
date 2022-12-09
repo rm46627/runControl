@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="card_stroke">
+        <item name="strokeWidth">1dp</item>
+        <item name="strokeColor">@color/strokeColor</item>
+        <item name="cardCornerRadius">10dp</item>
+    </style>
+
+    <style name="small_text">
+        <item name="android:textColor">@color/mediumGray2</item>
+        <item name="android:textSize">11sp</item>
+    </style>
+
+</resources>
