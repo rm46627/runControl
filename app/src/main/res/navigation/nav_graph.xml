@@ -45,5 +45,21 @@
         android:name="com.example.runcontrol.ui.history.HistoryFragment"
         android:label="Control"
         tools:layout="@layout/row_layout_history" >
+        <action
+            android:id="@+id/action_historyFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailsFragment"
+        android:name="com.example.runcontrol.ui.maps.DetailsFragment"
+        android:label="DetailsFragment" >
+        <action
+            android:id="@+id/action_detailsFragment_to_historyFragment"
+            app:destination="@id/historyFragment"
+            app:popUpTo="@id/historyFragment"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="run"
+            app:argType="com.example.runcontrol.database.entities.RunEntity" />
     </fragment>
 </navigation>

@@ -120,7 +120,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             binding.hintTextView.hide()
             binding.resetBtn.show()
             binding.resultBtn.show()
-            showBiggerPicture()
+            showBiggerPicture(false)
         }
     }
 
@@ -238,19 +238,20 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         stopForegroundService()
         binding.stopBtn.hide()
         binding.startBtn.show()
-        showBiggerPicture()
+        showBiggerPicture(true)
         displayResults(true)
         mapsViewModel.ended()
     }
 
-    private fun showBiggerPicture() {
+    private fun showBiggerPicture(animate: Boolean) {
         val bounds = LatLngBounds.Builder()
         for (location in locationList) {
             bounds.include(location)
         }
+        val duration = if (animate) 2000 else 1
         map.animateCamera(
             CameraUpdateFactory.newLatLngBounds(bounds.build(), 100),
-            2000,
+            duration,
             null
         )
         addMarker(locationList.first(), R.drawable.ic_start)

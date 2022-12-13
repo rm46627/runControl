@@ -4,12 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.runcontrol.R
 import com.example.runcontrol.RunsDiffUtil
 import com.example.runcontrol.database.entities.RunEntity
 import com.example.runcontrol.databinding.RowLayoutHistoryBinding
+import com.example.runcontrol.extensionFunctions.NavController.safeNavigate
 import com.example.runcontrol.ui.maps.MapsUtil
 
 class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.MyViewHolder>() {
@@ -23,7 +25,6 @@ class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.MyViewHolder>() {
             binding.dateValueTextView.text = runEntity.date
             binding.timeValueTextView.text = MapsUtil.getTimerStringFromTime(runEntity.time)
             binding.distanceValueTextView.text = MapsUtil.formatDistance(runEntity.distanceMeters)
-            binding.paceValueTextView.text = MapsUtil.formatAvgPace(runEntity.pace)
             binding.caloriesValueTextView.text = runEntity.burnedKcal.toString()
             binding.executePendingBindings()
         }
@@ -49,11 +50,9 @@ class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.MyViewHolder>() {
 
         // single click
         holder.itemView.findViewById<ConstraintLayout>(R.id.runRowLayout).setOnClickListener {
-//            val action =
-//                FavoritesGroupsFragmentDirections.actionFavoritesGroupsFragmentToFavouriteRecipesFragment(
-//                    currentGroup.id, currentGroup.color
-//                )
-//            holder.itemView.findNavController().navigate(action)
+            val action =
+                HistoryFragmentDirections.actionHistoryFragmentToDetailsFragment(currentRun)
+            holder.itemView.findNavController().safeNavigate(action)
         }
     }
 

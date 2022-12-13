@@ -31,4 +31,5 @@
     <string name="save_btn_saved">Saved</string>
     <string name="time">Time</string>
     <string name="pace_rowLayout">(min/km)</string>
+    <string name="title_activity_details">detailsActivity</string>
 </resources>
