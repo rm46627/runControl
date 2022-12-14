@@ -59,6 +59,7 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         map.isMyLocationEnabled = false
+        map.setOnMarkerClickListener { true }
         map.uiSettings.apply {
             isZoomControlsEnabled = false
             isZoomGesturesEnabled = false
