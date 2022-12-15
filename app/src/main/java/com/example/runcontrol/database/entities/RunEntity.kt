@@ -15,7 +15,8 @@ class RunEntity (
     var date: String,
     var time: Int,
     var distanceMeters: Double,
-    var pace: Double,
+    var avgPace: Double,
+    var paceTimes: List<Int>,
     var burnedKcal: Int,
     var locations: List<LatLng>
 ): Parcelable

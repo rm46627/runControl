@@ -339,6 +339,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             TrackerService.time.value!!,
             TrackerService.distanceMeters.value!!,
             TrackerService.avgPaceTime.value!!,
+            TrackerService.paceTimes.value!!,
             TrackerService.burnedKcal.value!!,
             locationList
         )

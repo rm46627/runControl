@@ -54,7 +54,8 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         val mapFragment = childFragmentManager.findFragmentById(R.id.details_map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
 
-        //chart
+        binding.dateValue.text = args.run.date
+
         binding.chartView.entryProducer = detailsViewModel.chartEntryModelProducer
 //        binding.chartView.marker = marker
 //        binding.chartView.chart?.addDecoration(decoration = thresholdLine)
@@ -62,6 +63,7 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
             this.maxLabelCount = 5
             this.valueFormatter = PercentageFormatAxisValueFormatter()
         }
+        detailsViewModel.setChartData(args.run.paceTimes)
 
     }
 

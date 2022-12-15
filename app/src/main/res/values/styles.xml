@@ -17,7 +17,7 @@
     </style>
 
     <style name="ColumnChartColumn1">
-        <item name="color">#FF6F3C</item>
+        <item name="color">@color/colorSecondary</item>
         <item name="thickness">16dp</item>
     </style>
 

@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val repository: Repository,
+    repository: Repository,
     application: Application
 ) : AndroidViewModel(application) {
 

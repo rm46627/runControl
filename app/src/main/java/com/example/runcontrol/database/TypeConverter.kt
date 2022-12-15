@@ -20,4 +20,15 @@ class TypeConverter {
         return gson.fromJson(value, listType)
     }
 
+    @TypeConverter
+    fun fromIntArrayList(value: List<Int>): String {
+        return gson.toJson(value)
+    }
+
+    @TypeConverter
+    fun toIntArrayList(value: String): List<Int> {
+        val listType = object: TypeToken<List<Int>>() {}.type
+        return gson.fromJson(value, listType)
+    }
+
 }

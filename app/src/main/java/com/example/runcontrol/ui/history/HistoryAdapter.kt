@@ -22,7 +22,7 @@ class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.MyViewHolder>() {
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(runEntity: RunEntity) {
-            binding.dateValueTextView.text = runEntity.date
+            binding.dateValueTextView.text = runEntity.date.takeLast(10)
             binding.timeValueTextView.text = MapsUtil.getTimerStringFromTime(runEntity.time)
             binding.distanceValueTextView.text = MapsUtil.formatDistance(runEntity.distanceMeters)
             binding.caloriesValueTextView.text = runEntity.burnedKcal.toString()
