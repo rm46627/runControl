@@ -1,4 +1,4 @@
-package com.example.runcontrol
+package com.example.runcontrol.utils
 
 import androidx.recyclerview.widget.DiffUtil
 

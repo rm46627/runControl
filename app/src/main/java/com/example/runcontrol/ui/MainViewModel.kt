@@ -1,4 +1,4 @@
-package com.example.runcontrol
+package com.example.runcontrol.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

@@ -1,4 +1,4 @@
-package com.example.runcontrol.extensionFunctions
+package com.example.runcontrol.extensions
 
 import android.view.View
 

@@ -3,7 +3,7 @@ package com.example.runcontrol.di
 import android.content.Context
 import androidx.room.Room
 import com.example.runcontrol.database.Database
-import com.example.runcontrol.Constants.DATABASE_NAME
+import com.example.runcontrol.utils.Constants.DATABASE_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

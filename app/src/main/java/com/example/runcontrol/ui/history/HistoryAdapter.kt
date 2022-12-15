@@ -8,11 +8,11 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.runcontrol.R
-import com.example.runcontrol.RunsDiffUtil
 import com.example.runcontrol.database.entities.RunEntity
 import com.example.runcontrol.databinding.RowLayoutHistoryBinding
-import com.example.runcontrol.extensionFunctions.NavController.safeNavigate
+import com.example.runcontrol.extensions.NavController.safeNavigate
 import com.example.runcontrol.ui.maps.MapsUtil
+import com.example.runcontrol.utils.RunsDiffUtil
 
 class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.MyViewHolder>() {
 

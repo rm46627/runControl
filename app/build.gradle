@@ -95,5 +95,5 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.0"
 
     // charting library
-//    implementation "com.patrykandpatryk.vico:view:1.5.2"
+    implementation "com.patrykandpatryk.vico:view:1.3.0"
 }

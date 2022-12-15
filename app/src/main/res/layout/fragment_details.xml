@@ -26,6 +26,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/details_map">
 
+        <com.patrykandpatryk.vico.view.chart.ChartView
+            android:id="@+id/chart_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:chart="column"
+            app:showBottomAxis="true"
+            app:showStartAxis="true"
+            app:axisStyle="@style/ColumnChartAxisStyle"
+            app:columnChartStyle="@style/ColumnChartColumnChartStyle" />
+
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

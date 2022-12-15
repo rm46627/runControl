@@ -13,24 +13,24 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.example.runcontrol.Constants.TRACKER_SERVICE_START
-import com.example.runcontrol.Constants.TRACKER_SERVICE_STOP
-import com.example.runcontrol.Permissions.hasBackgroundLocationPermission
-import com.example.runcontrol.Permissions.requestBackgroundLocationPermission
 import com.example.runcontrol.R
 import com.example.runcontrol.database.entities.RunEntity
 import com.example.runcontrol.databinding.FragmentMapsBinding
-import com.example.runcontrol.extensionFunctions.NavController.safeNavigate
-import com.example.runcontrol.extensionFunctions.View.disable
-import com.example.runcontrol.extensionFunctions.View.enable
-import com.example.runcontrol.extensionFunctions.View.hide
-import com.example.runcontrol.extensionFunctions.View.show
+import com.example.runcontrol.extensions.NavController.safeNavigate
+import com.example.runcontrol.extensions.View.disable
+import com.example.runcontrol.extensions.View.enable
+import com.example.runcontrol.extensions.View.hide
+import com.example.runcontrol.extensions.View.show
 import com.example.runcontrol.service.TrackerService
 import com.example.runcontrol.ui.maps.MapsUtil.formatAvgPace
 import com.example.runcontrol.ui.maps.MapsUtil.formatDistance
 import com.example.runcontrol.ui.maps.MapsUtil.fromVectorToBitmap
 import com.example.runcontrol.ui.maps.MapsUtil.getTimerStringFromTime
 import com.example.runcontrol.ui.maps.MapsUtil.setCameraPosition
+import com.example.runcontrol.utils.Constants.TRACKER_SERVICE_START
+import com.example.runcontrol.utils.Constants.TRACKER_SERVICE_STOP
+import com.example.runcontrol.utils.Permissions.hasBackgroundLocationPermission
+import com.example.runcontrol.utils.Permissions.requestBackgroundLocationPermission
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -157,7 +157,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         val polyline = map.addPolyline(
             PolylineOptions().apply {
                 width(10f)
-                color(Color.BLUE)
                 jointType(JointType.ROUND)
                 startCap(ButtCap())
                 endCap(ButtCap())

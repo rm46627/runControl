@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.runcontrol.R
 import com.example.runcontrol.databinding.FragmentResultBinding
-import com.example.runcontrol.extensionFunctions.View.disable
+import com.example.runcontrol.extensions.View.disable
 import com.example.runcontrol.ui.maps.MapsUtil.formatDistance
 import com.example.runcontrol.ui.maps.MapsUtil.getTimerStringFromTime
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment

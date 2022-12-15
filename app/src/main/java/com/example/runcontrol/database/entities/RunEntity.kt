@@ -3,7 +3,7 @@ package com.example.runcontrol.database.entities
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.runcontrol.Constants
+import com.example.runcontrol.utils.Constants
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.parcelize.Parcelize
 

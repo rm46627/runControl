@@ -51,7 +51,7 @@
     </fragment>
     <fragment
         android:id="@+id/detailsFragment"
-        android:name="com.example.runcontrol.ui.maps.DetailsFragment"
+        android:name="com.example.runcontrol.ui.history.details.DetailsFragment"
         android:label="DetailsFragment" >
         <action
             android:id="@+id/action_detailsFragment_to_historyFragment"

@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.runcontrol.MainViewModel
 import com.example.runcontrol.databinding.FragmentHistoryListBinding
+import com.example.runcontrol.ui.MainViewModel
 
 
 class HistoryFragment : Fragment() {

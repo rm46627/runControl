@@ -7,10 +7,10 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.runcontrol.Permissions.hasLocationPermission
+import com.example.runcontrol.utils.Permissions.hasLocationPermission
 import com.example.runcontrol.R
 import com.example.runcontrol.databinding.ActivityMainBinding
-import com.example.runcontrol.extensionFunctions.View.show
+import com.example.runcontrol.extensions.View.show
 import com.example.runcontrol.ui.permission.PermissionFragment
 import dagger.hilt.android.AndroidEntryPoint
 
