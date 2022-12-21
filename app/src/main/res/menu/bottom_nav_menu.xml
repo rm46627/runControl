@@ -4,7 +4,7 @@
         android:title="@string/map_fragment_name"
         android:icon="@drawable/ic_run"/>
 
-    <item android:id="@+id/historyFragment"
+    <item android:id="@+id/controlFragment"
         android:title="@string/history_fragment_name"
-        android:icon="@drawable/ic_history"/>
+        android:icon="@drawable/ic_control"/>
 </menu>

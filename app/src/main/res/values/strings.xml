@@ -34,4 +34,7 @@
     <string name="title_activity_details">detailsActivity</string>
     <string name="dateFull_placeholder">18:20 01/01/2022</string>
     <string name="remove_btn">Remove</string>
+    <string name="recent_activities">Recent</string>
+    <string name="week_activity">Week activity</string>
+    <string name="show_more">Show more</string>
 </resources>

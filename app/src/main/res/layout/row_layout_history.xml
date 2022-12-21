@@ -64,7 +64,6 @@
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="24sp"
-                    android:textStyle="bold"
                     app:layout_constraintEnd_toStartOf="@+id/distanceValue_textView"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/dateValue_textView" />
@@ -91,7 +90,6 @@
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="24sp"
-                    android:textStyle="bold"
                     app:layout_constraintEnd_toStartOf="@+id/caloriesValue_textView"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/timeValue_textView"
@@ -119,7 +117,6 @@
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="24sp"
-                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/distanceValue_textView"

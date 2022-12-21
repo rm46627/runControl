@@ -10,7 +10,7 @@
         tools:context=".ui.details.fragments.ingredients.IngredientsFragment">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/favoriteGroups_recyclerView"
+            android:id="@+id/history_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"

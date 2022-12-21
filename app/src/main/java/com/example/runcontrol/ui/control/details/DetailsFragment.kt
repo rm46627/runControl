@@ -1,4 +1,4 @@
-package com.example.runcontrol.ui.history.details
+package com.example.runcontrol.ui.control.details
 
 import android.annotation.SuppressLint
 import android.graphics.Color

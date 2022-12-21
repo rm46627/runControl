@@ -1,4 +1,4 @@
-package com.example.runcontrol.ui.history
+package com.example.runcontrol.ui.control.history
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

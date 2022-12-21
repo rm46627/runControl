@@ -13,7 +13,7 @@ interface RunDao {
     @Delete
     suspend fun deleteRun(runEntity: RunEntity)
 
-    @Query("SELECT * FROM run_table ORDER BY id ASC")
+    @Query("SELECT * FROM run_table ORDER BY id DESC")
     fun readRuns(): Flow<List<RunEntity>>
 
 }

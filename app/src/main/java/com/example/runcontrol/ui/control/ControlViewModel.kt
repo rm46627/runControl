@@ -1,4 +1,4 @@
-package com.example.runcontrol.ui.history.details
+package com.example.runcontrol.ui.control
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class DetailsViewModel @Inject constructor(
+class ControlViewModel @Inject constructor(
     repository: Repository,
     application: Application
 ) : AndroidViewModel(application) {

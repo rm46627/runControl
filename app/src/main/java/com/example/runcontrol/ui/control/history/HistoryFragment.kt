@@ -1,4 +1,4 @@
-package com.example.runcontrol.ui.history
+package com.example.runcontrol.ui.control.history
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -27,7 +27,7 @@ class HistoryFragment : Fragment() {
         binding.lifecycleOwner = this
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
-        setupRecyclerView(binding.favoriteGroupsRecyclerView)
+        setupRecyclerView(binding.historyRecyclerView)
 
         observeRuns()
 
