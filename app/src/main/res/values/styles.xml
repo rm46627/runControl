@@ -27,4 +27,9 @@
         <item name="horizontalAxisTickSpacing">3</item>
     </style>
 
+    <style name="customChip" parent="Widget.MaterialComponents.Chip.Filter">
+        <item name="chipBackgroundColor">@color/chip_background</item>
+        <item name="android:textColor">@color/chip_text</item>
+        <item name="checkedIconTint">@color/chip_text</item>
+    </style>
 </resources>

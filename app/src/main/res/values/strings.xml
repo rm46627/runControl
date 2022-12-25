@@ -36,5 +36,12 @@
     <string name="remove_btn">Remove</string>
     <string name="recent_activities">Recent</string>
     <string name="week_activity">Week activity</string>
-    <string name="show_more">Show more</string>
+    <string name="show_more">More</string>
+    <string name="show_all">All</string>
+    <string name="date_chip">Date</string>
+    <string name="time_chip">Time</string>
+    <string name="distance_chip">Distance</string>
+    <string name="calories_chip">Calories</string>
+
+
 </resources>

@@ -44,7 +44,7 @@
         android:id="@+id/historyFragment"
         android:name="com.example.runcontrol.ui.control.history.HistoryFragment"
         android:label="Control"
-        tools:layout="@layout/row_layout_history" >
+        tools:layout="@layout/row_layout_recent" >
         <action
             android:id="@+id/action_historyFragment_to_detailsFragment"
             app:destination="@id/detailsFragment" />
@@ -73,7 +73,11 @@
         android:label="ControlFragment" >
         <action
             android:id="@+id/action_controlFragment_to_historyFragment"
-            app:destination="@id/historyFragment" />
+            app:destination="@id/historyFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_right"
+            app:popEnterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right" />
         <action
             android:id="@+id/action_controlFragment_to_detailsFragment"
             app:destination="@id/detailsFragment" />

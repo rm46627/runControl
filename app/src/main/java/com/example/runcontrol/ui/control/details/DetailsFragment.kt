@@ -21,12 +21,16 @@ import com.patrykandpatryk.vico.core.axis.formatter.PercentageFormatAxisValueFor
 import com.patrykandpatryk.vico.core.axis.vertical.VerticalAxis
 import dagger.hilt.android.AndroidEntryPoint
 
+//    TODO: sliding left right for other runs
+//    TODO: on map click transition to new fragment allowing to view route with more details like zooming in and out
+
 @AndroidEntryPoint
 class DetailsFragment : Fragment(), OnMapReadyCallback {
 
     private val args: DetailsFragmentArgs by navArgs()
 
-    private lateinit var binding: FragmentDetailsBinding
+    private var _binding: FragmentDetailsBinding? = null
+    private val binding get() = _binding!!
     private lateinit var map: GoogleMap
     private lateinit var detailsViewModel: DetailsViewModel
 
@@ -44,9 +48,14 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentDetailsBinding.inflate(inflater, container, false)
+        _binding = FragmentDetailsBinding.inflate(inflater, container, false)
         locationList = args.run.locations as MutableList<LatLng>
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -54,7 +63,7 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         val mapFragment = childFragmentManager.findFragmentById(R.id.details_map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
 
-        binding.dateValue.text = args.run.date
+        binding.dateValue.text = args.run.dateToFullDateTime()
 
         binding.chartView.entryProducer = detailsViewModel.chartEntryModelProducer
 //        binding.chartView.marker = marker

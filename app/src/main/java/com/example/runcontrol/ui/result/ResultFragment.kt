@@ -36,8 +36,8 @@ class ResultFragment : BottomSheetDialogFragment() {
         binding = FragmentResultBinding.inflate(inflater, container, false)
 
         binding.distanceValueTextView.text = formatDistance(args.result.distanceMeters)
-        binding.timeValueTextView.text = getTimerStringFromTime(args.result.time)
-        binding.dateValueTextView.text = args.result.date
+        binding.timeValueTextView.text = getTimerStringFromTime(args.result.runTime)
+        binding.dateValueTextView.text = args.result.dateToClockTime()
 
         binding.shareBtn.setOnClickListener {
             shareResult()
@@ -46,8 +46,8 @@ class ResultFragment : BottomSheetDialogFragment() {
             saveResult()
         }
 
-        if (resultViewModel.dateStarted != args.result.date) {
-            resultViewModel.dateStarted = args.result.date
+        if (resultViewModel.dateStarted != args.result.dateToFullDateTime()) {
+            resultViewModel.dateStarted = args.result.dateToFullDateTime()
             resultViewModel.wasSaved = false
         }
 
@@ -76,7 +76,7 @@ class ResultFragment : BottomSheetDialogFragment() {
             type = "text/plain"
             putExtra(
                 Intent.EXTRA_TEXT,
-                "I went ${formatDistance(args.result.distanceMeters)} in ${args.result.time} on ${args.result.date}!"
+                "I went ${formatDistance(args.result.distanceMeters)} in ${args.result.runTime} on ${args.result.date}!"
             )
         }
         startActivity(shareIntent)

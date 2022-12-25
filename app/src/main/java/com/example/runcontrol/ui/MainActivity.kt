@@ -15,6 +15,8 @@ import com.example.runcontrol.ui.permission.PermissionFragment
 import com.example.runcontrol.utils.Permissions.hasLocationPermission
 import dagger.hilt.android.AndroidEntryPoint
 
+//      TODO: animate bottomNav sliding up and down
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 

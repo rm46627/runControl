@@ -49,7 +49,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     GoogleMap.OnMarkerClickListener,
     EasyPermissions.PermissionCallbacks {
 
-    private lateinit var binding: FragmentMapsBinding
+    private var _binding: FragmentMapsBinding? = null
+    private val binding get() = _binding!!
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
@@ -69,7 +70,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentMapsBinding.inflate(inflater, container, false)
+        _binding = FragmentMapsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
 
         binding.startBtn.setOnClickListener {
@@ -89,6 +90,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             LocationServices.getFusedLocationProviderClient(requireActivity())
 
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -135,7 +141,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
                 followPosition()
             }
         }
-        TrackerService.time.observe(viewLifecycleOwner) {
+        TrackerService.runTime.observe(viewLifecycleOwner) {
             binding.timerValueTextView.text = getTimerStringFromTime(it)
         }
         TrackerService.started.observe(viewLifecycleOwner) {
@@ -336,7 +342,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         val runEntity = RunEntity(
             0,
             TrackerService.date.value!!,
-            TrackerService.time.value!!,
+            TrackerService.runTime.value!!,
             TrackerService.distanceMeters.value!!,
             TrackerService.avgPaceTime.value!!,
             TrackerService.paceTimes.value!!,
@@ -372,4 +378,22 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     override fun onMarkerClick(p0: Marker): Boolean {
         return true
     }
+
+//    override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
+//        var animation = super.onCreateAnimation(transit, enter, nextAnim);
+//        if (animation == null && nextAnim != 0) {
+//            animation = AnimationUtils.loadAnimation(activity, nextAnim);
+//        }
+//        if (animation != null) {
+//            view?.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+//            animation.setAnimationListener(object : Animation.AnimationListener {
+//                override fun onAnimationStart(p0: Animation?) { }
+//                override fun onAnimationEnd(p0: Animation?) {
+//                    view?.setLayerType(View.LAYER_TYPE_NONE, null)
+//                }
+//                override fun onAnimationRepeat(p0: Animation?) {}
+//            })
+//        }
+//        return animation
+//    }
 }

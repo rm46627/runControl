@@ -22,8 +22,19 @@ class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.MyViewHolder>() {
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(runEntity: RunEntity) {
-            binding.dateValueTextView.text = runEntity.date.takeLast(10)
-            binding.timeValueTextView.text = MapsUtil.getTimerStringFromTime(runEntity.time)
+
+            val dayTime = runEntity.dateToDayTime()
+            val imageRes: Int = when(dayTime) {
+                "Morning" -> R.drawable.ic_morning
+                "Afternoon" -> R.drawable.ic_afternoon
+                "Evening" -> R.drawable.ic_evening
+                "Night" -> R.drawable.ic_night
+                else -> R.drawable.ic_afternoon
+            }
+            binding.dayTimeImageView.setImageResource(imageRes)
+            binding.dayTimeTextView.text = dayTime
+            binding.dateValueTextView.text = runEntity.dateToCalendar()
+            binding.timeValueTextView.text = MapsUtil.getTimerStringFromTime(runEntity.runTime)
             binding.distanceValueTextView.text = MapsUtil.formatDistance(runEntity.distanceMeters)
             binding.caloriesValueTextView.text = runEntity.burnedKcal.toString()
             binding.executePendingBindings()

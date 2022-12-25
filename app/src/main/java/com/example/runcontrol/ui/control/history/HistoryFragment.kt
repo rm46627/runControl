@@ -11,10 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.runcontrol.databinding.FragmentHistoryListBinding
 import com.example.runcontrol.ui.MainViewModel
 
+//  TODO: history filtering
 
 class HistoryFragment : Fragment() {
 
-    lateinit var binding: FragmentHistoryListBinding
+    private var _binding: FragmentHistoryListBinding? = null
+    private val binding get() = _binding!!
     private lateinit var mainViewModel: MainViewModel
     private val mAdapter: HistoryAdapter by lazy { HistoryAdapter() }
 
@@ -23,7 +25,7 @@ class HistoryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        binding = FragmentHistoryListBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentHistoryListBinding.inflate(layoutInflater, container, false)
         binding.lifecycleOwner = this
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
@@ -32,6 +34,11 @@ class HistoryFragment : Fragment() {
         observeRuns()
 
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun observeRuns() {

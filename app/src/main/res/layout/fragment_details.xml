@@ -3,40 +3,59 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/lightGray">
 
     <TextView
         android:id="@+id/date_value"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginStart="8dp"
         android:text="@string/dateFull_placeholder"
+        android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/deleteBtn"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/deleteBtn" />
 
     <Button
         android:id="@+id/deleteBtn"
-        android:text="@string/remove_btn"
-        app:icon="@drawable/ic_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/remove_btn"
+        app:icon="@drawable/ic_delete"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/details_map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <com.google.android.material.circularreveal.cardview.CircularRevealCardView
+        android:id="@+id/map_cardView"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/white"
+        app:cardCornerRadius="5dp"
         app:layout_constraintBottom_toTopOf="@id/data"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/deleteBtn"
-        tools:layout="@layout/amu_info_window" />
+        app:layout_constraintTop_toBottomOf="@+id/date_value">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/details_map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:layout_constraintBottom_toTopOf="@id/data"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout="@layout/amu_info_window" />
+    </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
 
     <ScrollView
         android:id="@+id/data"
@@ -45,17 +64,63 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/details_map">
+        app:layout_constraintTop_toBottomOf="@id/map_cardView">
 
-        <com.patrykandpatryk.vico.view.chart.ChartView
-            android:id="@+id/chart_view"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/data_constraintLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:chart="column"
-            app:showBottomAxis="true"
-            app:showStartAxis="true"
-            app:axisStyle="@style/ColumnChartAxisStyle"
-            app:columnChartStyle="@style/ColumnChartColumnChartStyle" />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/avgPaceChart_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/pace_textView"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/data_constraintLayout" />
+
+            <com.google.android.material.circularreveal.cardview.CircularRevealCardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/white"
+                app:cardCornerRadius="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/avgPaceChart_textView">
+
+                <com.patrykandpatryk.vico.view.chart.ChartView
+                    android:id="@+id/chart_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@color/white"
+                    app:axisStyle="@style/ColumnChartAxisStyle"
+                    app:chart="column"
+                    app:columnChartStyle="@style/ColumnChartColumnChartStyle"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:showBottomAxis="true"
+                    app:showStartAxis="true" />
+            </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     </ScrollView>
 

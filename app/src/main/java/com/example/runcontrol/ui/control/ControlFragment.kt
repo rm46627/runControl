@@ -16,7 +16,8 @@ import com.patrykandpatryk.vico.core.axis.vertical.VerticalAxis
 
 class ControlFragment : Fragment() {
 
-    lateinit var binding: FragmentControlBinding
+    private var _binding: FragmentControlBinding? = null
+    private val binding get() = _binding!!
     private lateinit var mainViewModel: MainViewModel
     private lateinit var controlViewModel: ControlViewModel
     private val mAdapter: RecentAdapter by lazy { RecentAdapter() }
@@ -25,8 +26,7 @@ class ControlFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
-        binding = FragmentControlBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentControlBinding.inflate(layoutInflater, container, false)
         binding.lifecycleOwner = this
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         controlViewModel = ViewModelProvider(requireActivity())[ControlViewModel::class.java]
@@ -57,10 +57,14 @@ class ControlFragment : Fragment() {
 ////            binding.itemCount = mAdapter.itemCount
 //        }
         mainViewModel.readRuns.observe(viewLifecycleOwner) { runs ->
-            RecentAdapter.limit = 3
             mAdapter.setData(runs)
 //            binding.itemCount = mAdapter.itemCount
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {

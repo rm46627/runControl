@@ -13,6 +13,9 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
+import com.example.runcontrol.ui.maps.MapsUtil
+import com.example.runcontrol.ui.maps.MapsUtil.formatDistance
+import com.example.runcontrol.ui.maps.MapsUtil.getTimerStringFromTime
 import com.example.runcontrol.utils.Constants.LOCATION_FASTEST_UPDATE_INTERVAL
 import com.example.runcontrol.utils.Constants.LOCATION_UPDATE_INTERVAL
 import com.example.runcontrol.utils.Constants.NOTIFICATION_CHANNEL_ID
@@ -20,13 +23,9 @@ import com.example.runcontrol.utils.Constants.NOTIFICATION_CHANNEL_NAME
 import com.example.runcontrol.utils.Constants.NOTIFICATION_ID
 import com.example.runcontrol.utils.Constants.TRACKER_SERVICE_START
 import com.example.runcontrol.utils.Constants.TRACKER_SERVICE_STOP
-import com.example.runcontrol.ui.maps.MapsUtil
-import com.example.runcontrol.ui.maps.MapsUtil.formatDistance
-import com.example.runcontrol.ui.maps.MapsUtil.getTimerStringFromTime
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.AndroidEntryPoint
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -46,8 +45,8 @@ class TrackerService: LifecycleService() {
     companion object {
         val started = MutableLiveData<Boolean>()
         val distanceMeters = MutableLiveData<Double>()
-        val time = MutableLiveData<Int>()
-        val date = MutableLiveData<String>()
+        val runTime = MutableLiveData<Int>()
+        val date = MutableLiveData<Long>()
         val locationList = MutableLiveData<MutableList<LatLng>>()
         val kilometerReached = MutableLiveData<Boolean>()
         val paceTimes = MutableLiveData<MutableList<Int>>()
@@ -55,7 +54,7 @@ class TrackerService: LifecycleService() {
         val burnedKcal = MutableLiveData<Int>()
 
         fun timerReset() {
-            time.postValue(0)
+            runTime.postValue(0)
         }
     }
 
@@ -63,7 +62,7 @@ class TrackerService: LifecycleService() {
         started.postValue(false)
         locationList.postValue(mutableListOf())
         distanceMeters.postValue((0.0))
-        time.postValue((0))
+        runTime.postValue((0))
         kilometerReached.postValue(false)
         paceTimes.postValue(mutableListOf())
         avgPaceTime.postValue(0.0)
@@ -156,9 +155,9 @@ class TrackerService: LifecycleService() {
         timer.scheduleAtFixedRate(
             object : TimerTask() {
                 override fun run() {
-                    time.value?.apply{
-                        val tt = time.value!! + 1
-                        time.postValue(tt)
+                    runTime.value?.apply{
+                        val tt = runTime.value!! + 1
+                        runTime.postValue(tt)
                     }
                 }
             },
@@ -168,9 +167,7 @@ class TrackerService: LifecycleService() {
     }
 
     private fun setDate() {
-        val simpleDateFormat = SimpleDateFormat("hh:mm:ss dd/MM/yyyy", Locale.ENGLISH)
-        val time = Date(System.currentTimeMillis())
-        date.postValue(simpleDateFormat.format(time))
+        date.postValue(System.currentTimeMillis())
     }
 
     private fun updateDistance() {
@@ -194,7 +191,7 @@ class TrackerService: LifecycleService() {
     private fun updateAvgPace() {
         paceTimes.value?.apply {
             if (this.isEmpty()) {
-                val t = time.value!!
+                val t = runTime.value!!
                 add(t)
                 paceTimes.postValue(this)
                 avgPaceTime.postValue(t.toDouble())
@@ -205,7 +202,7 @@ class TrackerService: LifecycleService() {
                         tsum += t
                     }
                 }
-                add(time.value!! - tsum)
+                add(runTime.value!! - tsum)
                 paceTimes.postValue(this)
                 avgPaceTime.postValue((tsum.toDouble() + this.last().toDouble())/this.size)
             }
@@ -219,7 +216,7 @@ class TrackerService: LifecycleService() {
     private fun updateNotificationPeriodically() {
         notification.apply {
             setContentTitle("Your running session")
-            setContentText(formatDistance(distanceMeters.value!!) + "\n" + getTimerStringFromTime(time.value!!))
+            setContentText(formatDistance(distanceMeters.value!!) + "\n" + getTimerStringFromTime(runTime.value!!))
         }
         notificationManager.notify(NOTIFICATION_ID, notification.build())
     }

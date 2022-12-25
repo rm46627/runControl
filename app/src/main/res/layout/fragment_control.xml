@@ -5,63 +5,103 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/lightGray">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
+            android:layout_height="wrap_content"
+            android:background="@color/lightGray"
             tools:context=".ui.details.fragments.ingredients.IngredientsFragment">
 
             <TextView
                 android:id="@+id/recent_textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/recent_activities"
-                android:textSize="26sp"
-                android:textStyle="bold"
                 android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recentActivities_recyclerView"
+            <com.google.android.material.circularreveal.cardview.CircularRevealCardView
+                android:id="@+id/recycler_cardView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/white"
+                app:cardCornerRadius="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/recent_textView" />
+                app:layout_constraintTop_toBottomOf="@id/recent_textView">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recentActivities_recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutAnimation="@anim/layout_animation"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
 
             <TextView
                 android:id="@+id/chart_textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/week_activity"
-                android:textSize="26sp"
-                android:textStyle="bold"
                 android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/recentActivities_recyclerView"/>
+                app:layout_constraintTop_toBottomOf="@id/recycler_cardView" />
 
-            <com.patrykandpatryk.vico.view.chart.ChartView
-                android:id="@+id/weekActivity_chartView"
+            <com.google.android.material.circularreveal.cardview.CircularRevealCardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="4dp"
-                app:axisStyle="@style/ColumnChartAxisStyle"
-                app:chart="column"
-                app:columnChartStyle="@style/ColumnChartColumnChartStyle"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/white"
+                app:cardCornerRadius="5dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/chart_textView"
-                app:showBottomAxis="true"
-                app:showStartAxis="true" />
+                app:layout_constraintTop_toBottomOf="@id/chart_textView">
+
+                <com.patrykandpatryk.vico.view.chart.ChartView
+                    android:id="@+id/weekActivity_chartView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@color/white"
+                    app:axisStyle="@style/ColumnChartAxisStyle"
+                    app:chart="column"
+                    app:columnChartStyle="@style/ColumnChartColumnChartStyle"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:showBottomAxis="true"
+                    app:showStartAxis="true" />
+            </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

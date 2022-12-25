@@ -8,7 +8,7 @@ import com.example.runcontrol.database.entities.RunEntity
 
 @Database(
     entities = [RunEntity::class],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 @TypeConverters(TypeConverter::class)

@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="colorPrimary">@color/purple_500</color>
-    <color name="colorPrimaryDark">@color/purple_700</color>
-    <color name="colorSecondary">@color/teal_200</color>
-    <color name="colorSecondaryDark">@color/teal_700</color>
-    <color name="colorOnPrimary">@color/white</color>
+    <color name="colorPrimary">#6f79a8</color>
+    <color name="colorPrimaryLight">#aab6fe</color>
+    <color name="colorPrimaryDark">#49599a</color>
+    <color name="colorSecondary">#90caf9</color>
+    <color name="colorSecondaryLight">#c3fdff</color>
+    <color name="colorSecondaryDark">#5d99c6</color>
+    <color name="colorOnPrimary">@color/black</color>
     <color name="colorOnSecondary">@color/black</color>
 
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
     <color name="red">#FFE06575</color>
     <color name="orange">#FFFF9000</color>
 
@@ -27,5 +24,12 @@
     <color name="darker">#151B20</color>
     <color name="black">#FF000000</color>
 
-    <color name="strokeColor">@color/lightMediumGray</color>
+    <color name="strokeColor">@color/mediumGray</color>
+
+    // chip
+    <color name="checkedBackground">@color/colorPrimaryDark</color>
+    <color name="uncheckedBackground">@color/lightMediumGray</color>
+    <color name="checkedText">@color/white</color>
+    <color name="uncheckedText">@color/dark</color>
+
 </resources>
