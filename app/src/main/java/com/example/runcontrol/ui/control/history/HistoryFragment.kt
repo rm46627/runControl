@@ -10,15 +10,21 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.runcontrol.databinding.FragmentHistoryListBinding
 import com.example.runcontrol.ui.MainViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-//  TODO: history filtering
-
+@AndroidEntryPoint
 class HistoryFragment : Fragment() {
 
     private var _binding: FragmentHistoryListBinding? = null
     private val binding get() = _binding!!
     private lateinit var mainViewModel: MainViewModel
     private val mAdapter: HistoryAdapter by lazy { HistoryAdapter() }
+    private lateinit var historyViewModel: HistoryViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        historyViewModel = ViewModelProvider(requireActivity())[HistoryViewModel::class.java]
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,7 +37,21 @@ class HistoryFragment : Fragment() {
 
         setupRecyclerView(binding.historyRecyclerView)
 
+        binding.sortTypeChipGroup.setOnCheckedStateChangeListener { _, selectedChipId ->
+            historyViewModel.selectedChip = selectedChipId[0]
+            observeRuns()
+        }
+        binding.sortDirImageView.setOnClickListener {
+            historyViewModel.listDesc = !historyViewModel.listDesc
+            observeRuns()
+            it.animate().apply {
+                duration = 300
+                rotationXBy(180f)
+            }
+        }
+
         observeRuns()
+
 
         return binding.root
     }
@@ -42,9 +62,22 @@ class HistoryFragment : Fragment() {
     }
 
     private fun observeRuns() {
+        val desc = historyViewModel.listDesc
         mainViewModel.readRuns.observe(viewLifecycleOwner) { runs ->
-            mAdapter.setData(runs)
-//            binding.itemCount = mAdapter.itemCount
+            mAdapter.setData(runs.sortedWith (
+                when(historyViewModel.selectedChip){
+                    binding.dateChip.id ->
+                        if(desc) compareByDescending {it.date}
+                        else compareBy {it.date}
+                    binding.timeChip.id -> if(desc) compareByDescending {it.runTime}
+                        else compareBy {it.runTime}
+                    binding.distanceChip.id -> if(desc) compareByDescending {it.distanceMeters}
+                        else compareBy {it.distanceMeters}
+                    binding.caloriesChip.id -> if(desc) compareByDescending {it.burnedKcal}
+                        else compareBy {it.burnedKcal}
+                    else -> if(desc) compareByDescending {it.date} else compareBy {it.burnedKcal}
+                }
+            ))
         }
     }
 

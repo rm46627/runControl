@@ -1,7 +1,9 @@
 package com.example.runcontrol.ui.control
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
@@ -60,10 +62,7 @@ class RecentAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             if(!btnClicked) {
                 binding.btn.setOnClickListener {
                     displayedRunsLimit += LIMIT_ADDITION
-                    adapter.notifyItemInserted(displayedRunsLimit+1)
-                    adapter.notifyItemInserted(displayedRunsLimit+2)
-                    adapter.notifyItemInserted(displayedRunsLimit+3)
-                    recyclerView.scheduleLayoutAnimation()
+                    adapter.notifyItemRangeInserted(displayedRunsLimit - LIMIT_ADDITION, displayedRunsLimit)
                     showMoreClicked = true
                 }
             } else {
@@ -114,9 +113,9 @@ class RecentAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     private fun initCardLayout(holder: RunCardViewHolder, position: Int) {
-        clickAnimationForCard(holder)
         val currentRun = runs[position]
         holder.bind(currentRun)
+        setAnimation(holder.itemView, position)
         // single click
         holder.itemView.findViewById<ConstraintLayout>(R.id.runRowLayout)
             .setOnClickListener {
@@ -124,6 +123,7 @@ class RecentAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     ControlFragmentDirections.actionControlFragmentToDetailsFragment(currentRun)
                 holder.itemView.findNavController().safeNavigate(action)
             }
+        clickAnimationForCard(holder)
     }
 
     private fun clickAnimationForCard(holder: RunCardViewHolder) {
@@ -142,10 +142,14 @@ class RecentAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     fun setData(newRunsList: List<RunEntity>) {
-//        val runsDiffUtil = RunsDiffUtil(runs, newRunsList.subList(0, displayedRunsLimit))
         val runsDiffUtil = RunsDiffUtil(runs, newRunsList)
         val diffUtilResult = DiffUtil.calculateDiff(runsDiffUtil)
         runs = newRunsList
         diffUtilResult.dispatchUpdatesTo(this)
+    }
+
+    private fun setAnimation(view: View, position: Int) {
+        val anim = AnimationUtils.loadAnimation(view.context, R.anim.scale_up)
+        view.startAnimation(anim)
     }
 }

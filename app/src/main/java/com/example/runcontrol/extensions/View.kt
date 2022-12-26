@@ -12,6 +12,10 @@ object View {
         this.visibility = View.INVISIBLE
     }
 
+    fun View.gone(){
+        this.visibility = View.GONE
+    }
+
     fun View.enable(){
         this.isEnabled = true
     }

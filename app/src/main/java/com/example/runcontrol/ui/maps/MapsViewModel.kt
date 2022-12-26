@@ -5,10 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
-enum class RunStatus {
-    CLEAN, STARTED, ENDED
-}
-
 @HiltViewModel
 class MapsViewModel @Inject constructor(application: Application) : AndroidViewModel(application) {
 
@@ -16,6 +12,10 @@ class MapsViewModel @Inject constructor(application: Application) : AndroidViewM
 
     fun clean(){
         currentRunState = RunStatus.CLEAN
+    }
+
+    fun ready() {
+        currentRunState = RunStatus.READY
     }
 
     fun started() {
@@ -26,4 +26,8 @@ class MapsViewModel @Inject constructor(application: Application) : AndroidViewM
         currentRunState = RunStatus.ENDED
     }
 
+}
+
+enum class RunStatus {
+    CLEAN, READY,  STARTED, ENDED
 }

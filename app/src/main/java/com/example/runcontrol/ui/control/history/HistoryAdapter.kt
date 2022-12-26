@@ -74,7 +74,6 @@ class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.MyViewHolder>() {
         typedArray.recycle()
         holder.itemView.isClickable = true
         holder.itemView.isFocusable = true
-//        holder.itemView.foreground = holder.itemView.context.getDrawable(selectableItemBackground)
         holder.itemView.foreground =
             AppCompatResources.getDrawable(holder.itemView.context, selectableItemBackground)
     }

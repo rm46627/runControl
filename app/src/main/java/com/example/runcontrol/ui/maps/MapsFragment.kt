@@ -44,6 +44,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+// TODO: binding nullExceptionError on changing fragment while running some task here
+
 @AndroidEntryPoint
 class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
     GoogleMap.OnMarkerClickListener,
@@ -71,7 +73,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMapsBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = this
 
         binding.startBtn.setOnClickListener {
             onStartButtonClicked()
@@ -127,6 +128,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             binding.resetBtn.show()
             binding.resultBtn.show()
             showBiggerPicture(false)
+        }
+        else if (mapsViewModel.currentRunState == RunStatus.READY) {
+            binding.hintTextView.hide()
+            binding.startBtn.show()
         }
     }
 
@@ -188,6 +193,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             delay(2500)
             binding.hintTextView.hide()
             binding.startBtn.show()
+            mapsViewModel.ready()
         }
         return false
     }
@@ -284,7 +290,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         binding.resetBtn.hide()
         binding.resultBtn.hide()
         binding.startBtn.show()
-        mapsViewModel.clean()
+        mapsViewModel.ready()
     }
 
     @SuppressLint("MissingPermission")

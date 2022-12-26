@@ -19,4 +19,13 @@ object Constants {
 
     const val DATABASE_NAME = "RunControlDB"
     const val RUN_TABLE = "run_table"
+
+//    // sorting history
+//    const val DATE_CHIP =
+//    const val TIME_CHIP = 1
+//    const val DISTANCE_CHIP = 2
+//    const val CALORIES_CHIP = 3
+//    const val DESC_SORT = ""
+//    const val ASC_SORT = ""
+
 }
