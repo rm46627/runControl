@@ -86,3 +86,4 @@ class HistoryFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
 }
+

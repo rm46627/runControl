@@ -1,4 +1,4 @@
-package com.example.runcontrol.ui.result
+package com.example.runcontrol.ui.maps.result
 
 import android.content.Intent
 import android.os.Bundle

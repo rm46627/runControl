@@ -18,6 +18,13 @@ class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.MyViewHolder>() {
 
     private var runs = emptyList<RunEntity>()
 
+    private lateinit var mRecyclerView: RecyclerView
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        mRecyclerView = recyclerView
+    }
+
     class MyViewHolder(private val binding: RowLayoutHistoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -86,6 +93,9 @@ class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.MyViewHolder>() {
         val runsDiffUtil = RunsDiffUtil(runs, newRunsList)
         val diffUtilResult = DiffUtil.calculateDiff(runsDiffUtil)
         runs = newRunsList
+
+        val recyclerViewState = mRecyclerView.layoutManager?.onSaveInstanceState()
         diffUtilResult.dispatchUpdatesTo(this)
+        mRecyclerView.layoutManager?.onRestoreInstanceState(recyclerViewState)
     }
 }

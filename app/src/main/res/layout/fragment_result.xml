@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".ui.result.ResultFragment">
+        tools:context=".ui.maps.result.ResultFragment">
 
         <TextView
             android:id="@+id/distance_textView"

@@ -27,7 +27,7 @@
     </fragment>
     <dialog
         android:id="@+id/resultFragment"
-        android:name="com.example.runcontrol.ui.result.ResultFragment"
+        android:name="com.example.runcontrol.ui.maps.result.ResultFragment"
         android:label="fragment_result"
         tools:layout="@layout/fragment_result" >
         <action

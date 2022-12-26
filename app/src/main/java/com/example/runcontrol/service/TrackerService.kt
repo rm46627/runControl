@@ -7,7 +7,6 @@ import android.app.NotificationManager.IMPORTANCE_LOW
 import android.content.Context
 import android.content.Intent
 import android.location.Location
-import android.os.Build
 import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -222,14 +221,12 @@ class TrackerService: LifecycleService() {
     }
 
     private fun createNotificationChannel(){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            val channel = NotificationChannel(
-                NOTIFICATION_CHANNEL_ID,
-                NOTIFICATION_CHANNEL_NAME,
-                IMPORTANCE_LOW
-            )
-            notificationManager.createNotificationChannel(channel)
-        }
+        val channel = NotificationChannel(
+            NOTIFICATION_CHANNEL_ID,
+            NOTIFICATION_CHANNEL_NAME,
+            IMPORTANCE_LOW
+        )
+        notificationManager.createNotificationChannel(channel)
     }
 
 }

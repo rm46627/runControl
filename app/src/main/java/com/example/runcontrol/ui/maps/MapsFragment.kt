@@ -20,8 +20,11 @@ import com.example.runcontrol.extensions.NavController.safeNavigate
 import com.example.runcontrol.extensions.View.disable
 import com.example.runcontrol.extensions.View.enable
 import com.example.runcontrol.extensions.View.hide
+import com.example.runcontrol.extensions.View.hideFadeOut
 import com.example.runcontrol.extensions.View.show
+import com.example.runcontrol.extensions.View.showFadeIn
 import com.example.runcontrol.service.TrackerService
+import com.example.runcontrol.ui.MainViewModel
 import com.example.runcontrol.ui.maps.MapsUtil.formatAvgPace
 import com.example.runcontrol.ui.maps.MapsUtil.formatDistance
 import com.example.runcontrol.ui.maps.MapsUtil.fromVectorToBitmap
@@ -61,10 +64,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private var markerList = mutableListOf<Marker>()
 
     private lateinit var mapsViewModel: MapsViewModel
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mapsViewModel = ViewModelProvider(requireActivity())[MapsViewModel::class.java]
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -104,10 +109,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         mapFragment?.getMapAsync(this)
     }
 
-    override fun onStart() {
-        super.onStart()
-    }
-
     @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
@@ -132,6 +133,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         else if (mapsViewModel.currentRunState == RunStatus.READY) {
             binding.hintTextView.hide()
             binding.startBtn.show()
+            setCameraOnCurrentLocation(1)
+        }
+        else if (mapsViewModel.currentRunState == RunStatus.STARTED){
+            binding.hintTextView.hide()
+            setCameraOnCurrentLocation(1)
         }
     }
 
@@ -177,29 +183,24 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         polylineList.add(polyline)
     }
 
-    private fun followPosition() {
-        if (locationList.isNotEmpty()) {
-            map.animateCamera(
-                CameraUpdateFactory.newCameraPosition(setCameraPosition(locationList.last())),
-                1000,
-                null
-            )
-        }
-    }
-
     override fun onMyLocationButtonClick(): Boolean {
-        binding.hintTextView.animate().alpha(0f).duration = 1500
-        lifecycleScope.launch {
-            delay(2500)
-            binding.hintTextView.hide()
-            binding.startBtn.show()
-            mapsViewModel.ready()
+        if(mapsViewModel.currentRunState == RunStatus.CLEAN){
+            mainViewModel.canChangeFragment.postValue(false)
+            binding.hintTextView.hideFadeOut()
+            lifecycleScope.launch {
+                delay(1500)
+                binding.startBtn.showFadeIn()
+                delay(1000)
+                mapsViewModel.ready()
+                mainViewModel.canChangeFragment.postValue(true)
+            }
         }
         return false
     }
 
     @SuppressLint("MissingPermission")
     private fun onStartButtonClicked() {
+        mainViewModel.canChangeFragment.postValue(false)
         if (hasBackgroundLocationPermission(requireContext())) {
             startCountDown()
             binding.startBtn.disable()
@@ -239,6 +240,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             override fun onFinish() {
                 sendActionCommandToService(TRACKER_SERVICE_START)
                 binding.timerTextView.hide()
+                binding.stopBtn.enable()
+                mainViewModel.canChangeFragment.postValue(true)
             }
         }
         timer.start()
@@ -246,12 +249,22 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
     @SuppressLint("MissingPermission")
     private fun onStopButtonClicked() {
+        mainViewModel.canChangeFragment.postValue(false)
         stopForegroundService()
         binding.stopBtn.hide()
-        binding.startBtn.show()
         showBiggerPicture(true)
         displayResults(true)
         mapsViewModel.ended()
+    }
+
+    private fun followPosition() {
+        if (locationList.isNotEmpty()) {
+            map.animateCamera(
+                CameraUpdateFactory.newCameraPosition(setCameraPosition(locationList.last())),
+                1000,
+                null
+            )
+        }
     }
 
     private fun showBiggerPicture(animate: Boolean) {
@@ -267,6 +280,23 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         )
         addMarker(locationList.first(), R.drawable.ic_start)
         addMarker(locationList.last(), R.drawable.ic_finish)
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun setCameraOnCurrentLocation(duration: Int) {
+        fusedLocationProviderClient.lastLocation.addOnCompleteListener {
+            val lastKnownLocation = LatLng(
+                it.result.latitude,
+                it.result.longitude
+            )
+            map.animateCamera(
+                CameraUpdateFactory.newCameraPosition(
+                    setCameraPosition(lastKnownLocation)
+                ),
+                duration,
+                null
+            )
+        }
     }
 
     private fun addMarker(position: LatLng, drawable: Int) {
@@ -286,26 +316,20 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     }
 
     private fun onResetButtonClicked() {
+        mainViewModel.canChangeFragment.postValue(false)
         mapReset()
-        binding.resetBtn.hide()
-        binding.resultBtn.hide()
-        binding.startBtn.show()
-        mapsViewModel.ready()
+        lifecycleScope.launch {
+            binding.resetBtn.hideFadeOut()
+            binding.resultBtn.hideFadeOut()
+            delay(1000)
+            binding.startBtn.showFadeIn()
+            mapsViewModel.ready()
+            mainViewModel.canChangeFragment.postValue(true)
+        }
     }
 
-    @SuppressLint("MissingPermission")
     private fun mapReset() {
-        fusedLocationProviderClient.lastLocation.addOnCompleteListener {
-            val lastKnownLocation = LatLng(
-                it.result.latitude,
-                it.result.longitude
-            )
-            map.animateCamera(
-                CameraUpdateFactory.newCameraPosition(
-                    setCameraPosition(lastKnownLocation)
-                )
-            )
-        }
+        setCameraOnCurrentLocation(2000)
         for (polyline in polylineList) {
             polyline.remove()
         }
@@ -364,8 +388,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
                 enable()
             }
             binding.stopBtn.hide()
-            binding.resetBtn.show()
-            binding.resultBtn.show()
+            binding.resetBtn.showFadeIn()
+            binding.resultBtn.showFadeIn()
+            mainViewModel.canChangeFragment.postValue(true)
         }
     }
 
@@ -384,6 +409,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     override fun onMarkerClick(p0: Marker): Boolean {
         return true
     }
+
+
 
 //    override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
 //        var animation = super.onCreateAnimation(transit, enter, nextAnim);

@@ -2,6 +2,7 @@ package com.example.runcontrol.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -22,6 +23,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController : NavController
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +31,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         supportActionBar?.hide()
 
+        mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
         navController = navHostFragment.navController
@@ -46,11 +49,11 @@ class MainActivity : AppCompatActivity() {
         )
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-
             when (destination.id) {
                 R.id.mapsFragment -> binding.bottomNavigationView.show()
                 R.id.controlFragment -> binding.bottomNavigationView.show()
                 R.id.historyFragment -> binding.bottomNavigationView.show()
+                R.id.resultFragment -> binding.bottomNavigationView.show()
                 else -> binding.bottomNavigationView.gone()
             }
         }
@@ -58,6 +61,12 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigationView.setupWithNavController(navController)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
+        mainViewModel.canChangeFragment.observe(this){
+            when(it){
+                true -> binding.bottomNavigationView.menu.getItem(1).isEnabled = true
+                false -> binding.bottomNavigationView.menu.getItem(1).isEnabled = false
+            }
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

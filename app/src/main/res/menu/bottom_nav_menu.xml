@@ -6,5 +6,5 @@
 
     <item android:id="@+id/controlFragment"
         android:title="@string/history_fragment_name"
-        android:icon="@drawable/ic_control"/>
+        android:icon="@drawable/ic_control" />
 </menu>
