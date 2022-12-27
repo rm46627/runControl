@@ -1,6 +1,7 @@
 package com.example.runcontrol.ui.control
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.runcontrol.databinding.FragmentControlBinding
 import com.example.runcontrol.ui.MainViewModel
-import com.patrykandpatryk.vico.core.axis.formatter.PercentageFormatAxisValueFormatter
-import com.patrykandpatryk.vico.core.axis.vertical.VerticalAxis
+import com.example.runcontrol.ui.control.ChartUtil.daysOfLastWeek
+import com.example.runcontrol.ui.control.ChartUtil.mapDistancesToLastWeek
+import com.patrykandpatryk.vico.core.axis.formatter.AxisValueFormatter
+import com.patrykandpatryk.vico.core.axis.horizontal.HorizontalAxis
 
 
 class ControlFragment : Fragment() {
@@ -21,6 +24,8 @@ class ControlFragment : Fragment() {
     private lateinit var mainViewModel: MainViewModel
     private lateinit var controlViewModel: ControlViewModel
     private val mAdapter: RecentAdapter by lazy { RecentAdapter() }
+
+    private val lastWeek = daysOfLastWeek()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,21 +49,17 @@ class ControlFragment : Fragment() {
         binding.weekActivityChartView.entryProducer = controlViewModel.chartEntryModelProducer
 //        binding.chartView.marker = marker
 //        binding.chartView.chart?.addDecoration(decoration = thresholdLine)
-        with(binding.weekActivityChartView.startAxis as VerticalAxis) {
-            this.maxLabelCount = 5
-            this.valueFormatter = PercentageFormatAxisValueFormatter()
+        with(binding.weekActivityChartView.bottomAxis as HorizontalAxis) {
+            this.valueFormatter = AxisValueFormatter { x, _ -> lastWeek[x.toInt() % lastWeek.size] }
         }
-//        controlViewModel.setChartData(args.run.paceTimes)
     }
 
     private fun observeRuns() {
-//        mainViewModel.readRecentRuns(3).observe(viewLifecycleOwner) { runs ->
-//            mAdapter.setData(runs)
-////            binding.itemCount = mAdapter.itemCount
-//        }
         mainViewModel.readRuns.observe(viewLifecycleOwner) { runs ->
             mAdapter.setData(runs)
-//            binding.itemCount = mAdapter.itemCount
+            val distList = mapDistancesToLastWeek(runs, lastWeek)
+            Log.d("distList", distList.toString())
+            controlViewModel.setChartData(distList)
         }
     }
 

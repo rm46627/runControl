@@ -19,7 +19,7 @@ import java.text.DecimalFormat
 
 object MapsUtil {
 
-    fun setCameraPosition(location: LatLng): CameraPosition {
+    private fun setCameraPosition(location: LatLng): CameraPosition {
         return CameraPosition.Builder()
             .target(location)
             .zoom(18f)
@@ -58,7 +58,7 @@ object MapsUtil {
         return String.format("%02d:%02d", minutes, seconds)
     }
 
-    fun fromVectorToBitmap(resources: Resources, id: Int, color: Int): BitmapDescriptor {
+    private fun fromVectorToBitmap(resources: Resources, id: Int, color: Int): BitmapDescriptor {
         val vectorDrawable: Drawable = ResourcesCompat.getDrawable(resources, id, null)
             ?: return BitmapDescriptorFactory.defaultMarker()
         val bitmap = Bitmap.createBitmap(

@@ -35,11 +35,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDfKPSrae-f1jKnrP9ieKK3fkjJtaULBzQ" />
 
-        <activity
-            android:name=".detailsActivity"
-            android:exported="false"
-            android:label="@string/title_activity_details" />
-
         <service
             android:name=".service.TrackerService"
             android:exported="false"

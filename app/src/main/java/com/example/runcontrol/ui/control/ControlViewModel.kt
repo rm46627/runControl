@@ -31,9 +31,9 @@ class ControlViewModel @Inject constructor(
         }
     }
 
-    fun setChartData(paceTimes: List<Int>) {
+    fun setChartData(distances: List<Double>) {
         viewModelScope.launch {
-            chartEntryModelProducer.setEntries(entriesOf(*paceTimes.toPairs()))
+            chartEntryModelProducer.setEntries(entriesOf(*distances.toPairs()))
         }
     }
 }

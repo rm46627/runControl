@@ -7,9 +7,12 @@ import com.example.runcontrol.utils.Constants
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.parcelize.Parcelize
 import java.time.Instant
+import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
+import java.util.*
 
 @Parcelize
 @Entity(tableName = Constants.RUN_TABLE)
@@ -53,5 +56,20 @@ class RunEntity (
 
     fun dateToFullDateTime(): String {
         return getFormattedDate("HH:mm:ss dd/MM/yyyy")
+    }
+
+    fun isFromThisWeek(): Boolean {
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        val inputDate = this.dateToCalendar()
+        val date = LocalDate.parse(inputDate, formatter)
+        val now = LocalDate.now()
+        return date.isAfter(now.minusDays(7))
+    }
+
+    fun dateToDayOfWeek() : String {
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        val inputDate = this.dateToCalendar()
+        val date = LocalDate.parse(inputDate, formatter)
+        return date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
     }
 }

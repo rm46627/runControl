@@ -19,5 +19,4 @@ class MainViewModel @Inject constructor(
     var canChangeFragment: MutableLiveData<Boolean> = MutableLiveData()
 
     val readRuns: LiveData<List<RunEntity>> = repository.local.readRuns().asLiveData()
-
 }

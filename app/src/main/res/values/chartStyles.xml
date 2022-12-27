@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="LineChartColumnChartStyle">
+        <item name="column1">@style/ColumnChartColumn1</item>
+    </style>
+
+    <style name="ColumnChartColumn1">
+        <item name="color">@color/colorSecondary</item>
+        <item name="thickness">16dp</item>
+    </style>
+
+    <style name="LineChartAxisStyle1">
+        <item name="horizontalAxisTickPosition">center</item>
+        <item name="horizontalAxisTickOffset">1</item>
+        <item name="horizontalAxisTickSpacing">3</item>
+    </style>
+
+    <style name="LineChartAxisStyle">
+        <item name="showTitle">true</item>
+    </style>
+
+    <style name="LineChartAxisStyle.Bottom">
+        <item name="showTitle">true</item>
+    </style>
+
+    <style name="LineChartAxisStyle.Start">
+        <item name="verticalAxisHorizontalLabelPosition">inside</item>
+        <item name="title">Kilometers</item>
+        <item name="titleStyle">@style/LineChartAxisTitleStyle.Start</item>
+    </style>
+
+    <style name="LineChartAxisTitleStyle">
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="typeface">sans</item>
+    </style>
+
+    <style name="LineChartAxisTitleStyle.Start">
+        <item name="labelColor">?colorOnBackground</item>
+    </style>
+
+</resources>

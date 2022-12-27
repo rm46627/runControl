@@ -1,7 +1,6 @@
 package com.example.runcontrol.ui.control.details
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,8 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.example.runcontrol.R
 import com.example.runcontrol.databinding.FragmentDetailsBinding
-import com.example.runcontrol.ui.maps.MapsUtil.fromVectorToBitmap
-import com.google.android.gms.maps.CameraUpdateFactory
+import com.example.runcontrol.ui.maps.MapsUtil.drawPolyline
+import com.example.runcontrol.ui.maps.MapsUtil.showBiggerPicture
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
@@ -97,48 +96,9 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         showRun()
     }
 
-    private fun drawPolylines() {
-        val polyline = map.addPolyline(
-            PolylineOptions().apply {
-                width(10f)
-                jointType(JointType.ROUND)
-                startCap(ButtCap())
-                endCap(ButtCap())
-                addAll(locationList)
-            }
-        )
-        polylineList.add(polyline)
-    }
-
     private fun showRun() {
-        val bounds = LatLngBounds.Builder()
-        for (location in locationList) {
-            bounds.include(location)
-        }
-        map.animateCamera(
-            CameraUpdateFactory.newLatLngBounds(bounds.build(), 100),
-            1,
-            null
-        )
-        drawPolylines()
-        addMarker(locationList.first(), R.drawable.ic_start)
-        addMarker(locationList.last(), R.drawable.ic_finish)
-    }
-
-    private fun addMarker(position: LatLng, drawable: Int) {
-        val marker = map.addMarker(
-            MarkerOptions()
-                .position(position)
-                .zIndex(1f)
-                .icon(
-                    fromVectorToBitmap(
-                        resources,
-                        drawable,
-                        Color.parseColor("#000000")
-                    )
-                )
-        )
-        markerList.add(marker!!)
+        showBiggerPicture(false, locationList, markerList, resources, map)
+        drawPolyline(locationList, polylineList, map)
     }
 
 }

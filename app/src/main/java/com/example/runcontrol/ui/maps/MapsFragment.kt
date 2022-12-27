@@ -120,20 +120,23 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             isScrollGesturesEnabled = false
         }
         observeTrackerService()
-        if (mapsViewModel.currentRunState == RunStatus.ENDED) {
-            binding.hintTextView.hide()
-            binding.resetBtn.show()
-            binding.resultBtn.show()
-            showBiggerPicture(false, locationList, markerList, resources, map)
-        }
-        else if (mapsViewModel.currentRunState == RunStatus.READY) {
-            binding.hintTextView.hide()
-            binding.startBtn.show()
-            setCameraOnCurrentLocation(1, fusedLocationProviderClient, map)
-        }
-        else if (mapsViewModel.currentRunState == RunStatus.STARTED){
-            binding.hintTextView.hide()
-            setCameraOnCurrentLocation(1, fusedLocationProviderClient, map)
+        when (mapsViewModel.currentRunState) {
+            RunStatus.CLEAN -> {}
+            RunStatus.READY -> {
+                binding.hintTextView.hide()
+                binding.startBtn.show()
+                setCameraOnCurrentLocation(1, fusedLocationProviderClient, map)
+            }
+            RunStatus.STARTED -> {
+                binding.hintTextView.hide()
+                setCameraOnCurrentLocation(1, fusedLocationProviderClient, map)
+            }
+            RunStatus.ENDED -> {
+                binding.hintTextView.hide()
+                binding.resetBtn.show()
+                binding.resultBtn.show()
+                showBiggerPicture(false, locationList, markerList, resources, map)
+            }
         }
     }
 
