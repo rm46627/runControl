@@ -2,7 +2,6 @@ package com.example.runcontrol.ui.maps
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.LayoutInflater
@@ -27,16 +26,15 @@ import com.example.runcontrol.service.TrackerService
 import com.example.runcontrol.ui.MainViewModel
 import com.example.runcontrol.ui.maps.MapsUtil.formatAvgPace
 import com.example.runcontrol.ui.maps.MapsUtil.formatDistance
-import com.example.runcontrol.ui.maps.MapsUtil.fromVectorToBitmap
 import com.example.runcontrol.ui.maps.MapsUtil.getTimerStringFromTime
-import com.example.runcontrol.ui.maps.MapsUtil.setCameraPosition
+import com.example.runcontrol.ui.maps.MapsUtil.setCameraOnCurrentLocation
+import com.example.runcontrol.ui.maps.MapsUtil.showBiggerPicture
 import com.example.runcontrol.utils.Constants.TRACKER_SERVICE_START
 import com.example.runcontrol.utils.Constants.TRACKER_SERVICE_STOP
 import com.example.runcontrol.utils.Permissions.hasBackgroundLocationPermission
 import com.example.runcontrol.utils.Permissions.requestBackgroundLocationPermission
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
@@ -46,8 +44,6 @@ import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
-// TODO: binding nullExceptionError on changing fragment while running some task here
 
 @AndroidEntryPoint
 class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
@@ -128,16 +124,16 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             binding.hintTextView.hide()
             binding.resetBtn.show()
             binding.resultBtn.show()
-            showBiggerPicture(false)
+            showBiggerPicture(false, locationList, markerList, resources, map)
         }
         else if (mapsViewModel.currentRunState == RunStatus.READY) {
             binding.hintTextView.hide()
             binding.startBtn.show()
-            setCameraOnCurrentLocation(1)
+            setCameraOnCurrentLocation(1, fusedLocationProviderClient, map)
         }
         else if (mapsViewModel.currentRunState == RunStatus.STARTED){
             binding.hintTextView.hide()
-            setCameraOnCurrentLocation(1)
+            setCameraOnCurrentLocation(1, fusedLocationProviderClient, map)
         }
     }
 
@@ -148,8 +144,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
                 if (locationList.size == 1) {
                     binding.stopBtn.enable()
                 }
-                drawPolyline()
-                followPosition()
+                MapsUtil.drawPolyline(locationList, polylineList, map)
+                MapsUtil.followPosition(locationList, map)
             }
         }
         TrackerService.runTime.observe(viewLifecycleOwner) {
@@ -168,19 +164,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         TrackerService.burnedKcal.observe(viewLifecycleOwner) {
             binding.caloriesValueTextView.text = it.toString()
         }
-    }
-
-    private fun drawPolyline() {
-        val polyline = map.addPolyline(
-            PolylineOptions().apply {
-                width(10f)
-                jointType(JointType.ROUND)
-                startCap(ButtCap())
-                endCap(ButtCap())
-                addAll(locationList)
-            }
-        )
-        polylineList.add(polyline)
     }
 
     override fun onMyLocationButtonClick(): Boolean {
@@ -252,67 +235,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         mainViewModel.canChangeFragment.postValue(false)
         stopForegroundService()
         binding.stopBtn.hide()
-        showBiggerPicture(true)
+        showBiggerPicture(true, locationList, markerList, resources, map)
         displayResults(true)
         mapsViewModel.ended()
-    }
-
-    private fun followPosition() {
-        if (locationList.isNotEmpty()) {
-            map.animateCamera(
-                CameraUpdateFactory.newCameraPosition(setCameraPosition(locationList.last())),
-                1000,
-                null
-            )
-        }
-    }
-
-    private fun showBiggerPicture(animate: Boolean) {
-        val bounds = LatLngBounds.Builder()
-        for (location in locationList) {
-            bounds.include(location)
-        }
-        val duration = if (animate) 2000 else 1
-        map.animateCamera(
-            CameraUpdateFactory.newLatLngBounds(bounds.build(), 100),
-            duration,
-            null
-        )
-        addMarker(locationList.first(), R.drawable.ic_start)
-        addMarker(locationList.last(), R.drawable.ic_finish)
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun setCameraOnCurrentLocation(duration: Int) {
-        fusedLocationProviderClient.lastLocation.addOnCompleteListener {
-            val lastKnownLocation = LatLng(
-                it.result.latitude,
-                it.result.longitude
-            )
-            map.animateCamera(
-                CameraUpdateFactory.newCameraPosition(
-                    setCameraPosition(lastKnownLocation)
-                ),
-                duration,
-                null
-            )
-        }
-    }
-
-    private fun addMarker(position: LatLng, drawable: Int) {
-        val marker = map.addMarker(
-            MarkerOptions()
-                .position(position)
-                .zIndex(1f)
-                .icon(
-                    fromVectorToBitmap(
-                        resources,
-                        drawable,
-                        Color.parseColor("#000000")
-                    )
-                )
-        )
-        markerList.add(marker!!)
     }
 
     private fun onResetButtonClicked() {
@@ -329,7 +254,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     }
 
     private fun mapReset() {
-        setCameraOnCurrentLocation(2000)
+        setCameraOnCurrentLocation(2000, fusedLocationProviderClient, map)
         for (polyline in polylineList) {
             polyline.remove()
         }
@@ -410,8 +335,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         return true
     }
 
-
-
 //    override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
 //        var animation = super.onCreateAnimation(transit, enter, nextAnim);
 //        if (animation == null && nextAnim != 0) {
@@ -429,4 +352,5 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 //        }
 //        return animation
 //    }
+
 }

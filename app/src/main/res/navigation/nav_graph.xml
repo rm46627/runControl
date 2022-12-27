@@ -74,10 +74,10 @@
         <action
             android:id="@+id/action_controlFragment_to_historyFragment"
             app:destination="@id/historyFragment"
-            app:enterAnim="@anim/enter_from_right"
-            app:exitAnim="@anim/exit_to_right"
-            app:popEnterAnim="@anim/enter_from_right"
-            app:popExitAnim="@anim/exit_to_right" />
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_right"
+            app:popEnterAnim="@anim/slide_from_right"
+            app:popExitAnim="@anim/slide_to_right" />
         <action
             android:id="@+id/action_controlFragment_to_detailsFragment"
             app:destination="@id/detailsFragment" />

@@ -1,16 +1,19 @@
 package com.example.runcontrol.ui.maps
 
+import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.Log
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
+import com.example.runcontrol.R
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.*
 import com.google.maps.android.SphericalUtil
 import java.text.DecimalFormat
 
@@ -21,15 +24,6 @@ object MapsUtil {
             .target(location)
             .zoom(18f)
             .build()
-    }
-
-    fun calculateElapsedTime(startTime: Long, stopTime: Long): String {
-        val elapsedTime = stopTime - startTime
-        val seconds = (elapsedTime / 1000).toInt() % 60
-        val minutes = (elapsedTime / (1000 * 60) % 60)
-        val hours = (elapsedTime / (1000 * 60 * 60) % 24)
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds)
-//        return "$hours:$minutes:$seconds"
     }
 
     fun getTimerStringFromTime(time: Int): String {
@@ -77,5 +71,96 @@ object MapsUtil {
         DrawableCompat.setTint(vectorDrawable, color)
         vectorDrawable.draw(canvas)
         return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
+
+    fun drawPolyline(
+        locationList: MutableList<LatLng>,
+        polylineList: MutableList<Polyline>,
+        map: GoogleMap
+    ) {
+        val polyline = map.addPolyline(
+            PolylineOptions().apply {
+                width(10f)
+                jointType(JointType.ROUND)
+                startCap(ButtCap())
+                endCap(ButtCap())
+                addAll(locationList)
+            }
+        )
+        polylineList.add(polyline)
+    }
+
+    fun followPosition(locationList: MutableList<LatLng>, map: GoogleMap) {
+        if (locationList.isNotEmpty()) {
+            map.animateCamera(
+                CameraUpdateFactory.newCameraPosition(setCameraPosition(locationList.last())),
+                1000,
+                null
+            )
+        }
+    }
+
+    fun showBiggerPicture(
+        animate: Boolean,
+        locationList: MutableList<LatLng>,
+        markerList: MutableList<Marker>,
+        resources: Resources,
+        map: GoogleMap
+    ) {
+        val bounds = LatLngBounds.Builder()
+        for (location in locationList) {
+            bounds.include(location)
+        }
+        val duration = if (animate) 2000 else 1
+        map.animateCamera(
+            CameraUpdateFactory.newLatLngBounds(bounds.build(), 100),
+            duration,
+            null
+        )
+        addMarker(locationList.first(), R.drawable.ic_start, markerList, map, resources)
+        addMarker(locationList.last(), R.drawable.ic_finish, markerList, map, resources)
+    }
+
+    private fun addMarker(
+        position: LatLng,
+        drawable: Int,
+        markerList: MutableList<Marker>,
+        map: GoogleMap,
+        resources: Resources
+    ) {
+        val marker = map.addMarker(
+            MarkerOptions()
+                .position(position)
+                .zIndex(1f)
+                .icon(
+                    fromVectorToBitmap(
+                        resources,
+                        drawable,
+                        Color.parseColor("#000000")
+                    )
+                )
+        )
+        markerList.add(marker!!)
+    }
+
+    @SuppressLint("MissingPermission")
+    fun setCameraOnCurrentLocation(
+        duration: Int,
+        fusedLocationProviderClient: FusedLocationProviderClient,
+        map: GoogleMap
+    ) {
+        fusedLocationProviderClient.lastLocation.addOnCompleteListener {
+            val lastKnownLocation = LatLng(
+                it.result.latitude,
+                it.result.longitude
+            )
+            map.animateCamera(
+                CameraUpdateFactory.newCameraPosition(
+                    setCameraPosition(lastKnownLocation)
+                ),
+                duration,
+                null
+            )
+        }
     }
 }
