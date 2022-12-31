@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.runcontrol.database.Repository
+import com.example.runcontrol.database.entities.RunEntity
 import com.example.runcontrol.extensions.toPairs
 import com.patrykandpatryk.vico.core.entry.ChartEntryModelProducer
 import com.patrykandpatryk.vico.core.entry.entriesOf
@@ -13,26 +14,19 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
-    repository: Repository,
+    val repository: Repository,
     application: Application
 ) : AndroidViewModel(application) {
 
-//    private val generator = RandomEntriesGenerator(
-//        xRange = 0..5,
-//        yRange = 2..20,
-//    )
-
     internal val chartEntryModelProducer: ChartEntryModelProducer = ChartEntryModelProducer()
-
-//    init {
-//        viewModelScope.launch {
-//            chartEntryModelProducer.setEntries(generator.generateRandomEntries())
-//        }
-//    }
 
     fun setChartData(paceTimes: List<Int>) {
         viewModelScope.launch {
             chartEntryModelProducer.setEntries(entriesOf(*paceTimes.toPairs()))
         }
+    }
+
+    suspend fun removeFromDb(runEntity: RunEntity) {
+        repository.local.deleteRun(runEntity)
     }
 }

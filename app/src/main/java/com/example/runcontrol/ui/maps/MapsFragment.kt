@@ -299,11 +299,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private fun displayResults(delay: Boolean) {
         val runEntity = RunEntity(
             0,
-            TrackerService.date.value!!,
+            TrackerService.date,
             TrackerService.runTime.value!!,
             TrackerService.distanceMeters.value!!,
             TrackerService.avgPaceTime.value!!,
-            TrackerService.paceTimes.value!!,
+            TrackerService.paceTimes,
             TrackerService.burnedKcal.value!!,
             locationList
         )

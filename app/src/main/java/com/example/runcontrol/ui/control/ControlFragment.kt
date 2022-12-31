@@ -49,6 +49,7 @@ class ControlFragment : Fragment() {
         binding.weekActivityChartView.entryProducer = controlViewModel.chartEntryModelProducer
 //        binding.chartView.marker = marker
 //        binding.chartView.chart?.addDecoration(decoration = thresholdLine)
+        Log.d("lastWeek", lastWeek.toString())
         with(binding.weekActivityChartView.bottomAxis as HorizontalAxis) {
             this.valueFormatter = AxisValueFormatter { x, _ -> lastWeek[x.toInt() % lastWeek.size] }
         }

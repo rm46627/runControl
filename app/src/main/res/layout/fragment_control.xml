@@ -94,7 +94,7 @@
                     android:background="@color/white"
                     app:chart="column"
                     app:columnChartStyle="@style/LineChartColumnChartStyle"
-                    app:startAxisStyle="@style/LineChartAxisStyle.Start"
+                    app:startAxisStyle="@style/LineChartControlAxisStyle.Start"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

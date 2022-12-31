@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.os.Looper
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
@@ -23,10 +22,12 @@ import com.example.runcontrol.utils.Constants.NOTIFICATION_ID
 import com.example.runcontrol.utils.Constants.TRACKER_SERVICE_START
 import com.example.runcontrol.utils.Constants.TRACKER_SERVICE_STOP
 import com.google.android.gms.location.*
+import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class TrackerService: LifecycleService() {
@@ -45,12 +46,12 @@ class TrackerService: LifecycleService() {
         val started = MutableLiveData<Boolean>()
         val distanceMeters = MutableLiveData<Double>()
         val runTime = MutableLiveData<Int>()
-        val date = MutableLiveData<Long>()
         val locationList = MutableLiveData<MutableList<LatLng>>()
-        val kilometerReached = MutableLiveData<Boolean>()
-        val paceTimes = MutableLiveData<MutableList<Int>>()
         val avgPaceTime = MutableLiveData<Double>()
         val burnedKcal = MutableLiveData<Int>()
+
+        var date : Long = 0
+        var paceTimes : MutableList<Int> = mutableListOf()
 
         fun timerReset() {
             runTime.postValue(0)
@@ -62,8 +63,6 @@ class TrackerService: LifecycleService() {
         locationList.postValue(mutableListOf())
         distanceMeters.postValue((0.0))
         runTime.postValue((0))
-        kilometerReached.postValue(false)
-        paceTimes.postValue(mutableListOf())
         avgPaceTime.postValue(0.0)
     }
 
@@ -76,7 +75,6 @@ class TrackerService: LifecycleService() {
                     updateDistance()
                     updateNotificationPeriodically()
                     updateKcal()
-                    Log.d("dist", "$distanceMeters")
                 }
             }
         }
@@ -117,7 +115,7 @@ class TrackerService: LifecycleService() {
     private fun startForegroundService() {
         startLocationUpdates()
         startTimer()
-        setDate()
+        date = System.currentTimeMillis()
         createNotificationChannel()
         startForeground(NOTIFICATION_ID, notification.build())
     }
@@ -128,7 +126,7 @@ class TrackerService: LifecycleService() {
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(
             NOTIFICATION_ID
         )
-        stopForeground(true)
+        stopForeground(STOP_FOREGROUND_DETACH)
         stopSelf()
     }
 
@@ -138,11 +136,11 @@ class TrackerService: LifecycleService() {
 
     @SuppressLint("MissingPermission")
     private fun startLocationUpdates(){
-        val locationRequest = LocationRequest.create().apply{
-            interval = LOCATION_UPDATE_INTERVAL
-            fastestInterval = LOCATION_FASTEST_UPDATE_INTERVAL
-            priority = Priority.PRIORITY_HIGH_ACCURACY
-        }
+        val locationRequest = LocationRequest.Builder(LOCATION_UPDATE_INTERVAL)
+            .setPriority(PRIORITY_HIGH_ACCURACY)
+            .setMinUpdateIntervalMillis(LOCATION_FASTEST_UPDATE_INTERVAL)
+            .build()
+
         fusedLocationProviderClient.requestLocationUpdates(
             locationRequest,
             locationCallback,
@@ -165,10 +163,6 @@ class TrackerService: LifecycleService() {
         )
     }
 
-    private fun setDate() {
-        date.postValue(System.currentTimeMillis())
-    }
-
     private fun updateDistance() {
         distanceMeters.postValue(locationList.value?.let {
             MapsUtil.calculateDistance(it, distanceMeters.value!!)
@@ -178,21 +172,16 @@ class TrackerService: LifecycleService() {
             currentMeters = meters
         } else {
             currentMeters = 0
-            nextKilometer()
+            updateAvgPace()
         }
     }
 
-    private fun nextKilometer() {
-        updateAvgPace()
-        kilometerReached.postValue(true)
-    }
-
     private fun updateAvgPace() {
-        paceTimes.value?.apply {
+        paceTimes.apply {
             if (this.isEmpty()) {
                 val t = runTime.value!!
                 add(t)
-                paceTimes.postValue(this)
+                paceTimes = this
                 avgPaceTime.postValue(t.toDouble())
             } else {
                 var tsum = 0
@@ -202,7 +191,7 @@ class TrackerService: LifecycleService() {
                     }
                 }
                 add(runTime.value!! - tsum)
-                paceTimes.postValue(this)
+                paceTimes = this
                 avgPaceTime.postValue((tsum.toDouble() + this.last().toDouble())/this.size)
             }
         }

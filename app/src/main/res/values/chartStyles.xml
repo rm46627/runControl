@@ -16,16 +16,19 @@
         <item name="horizontalAxisTickSpacing">3</item>
     </style>
 
-    <style name="LineChartAxisStyle">
+    <style name="LineChartControlAxisStyle">
+        <item name="showTitle">true</item>
+        <item name="chartHorizontalScrollingEnabled">false</item>
+        <item name="showGuideline">false</item>
+        <item name="showTick">false</item>
+    </style>
+
+    <style name="LineChartControlAxisStyle.Bottom">
         <item name="showTitle">true</item>
     </style>
 
-    <style name="LineChartAxisStyle.Bottom">
-        <item name="showTitle">true</item>
-    </style>
-
-    <style name="LineChartAxisStyle.Start">
-        <item name="verticalAxisHorizontalLabelPosition">inside</item>
+    <style name="LineChartControlAxisStyle.Start">
+        <item name="verticalAxisHorizontalLabelPosition">outside</item>
         <item name="title">Kilometers</item>
         <item name="titleStyle">@style/LineChartAxisTitleStyle.Start</item>
     </style>

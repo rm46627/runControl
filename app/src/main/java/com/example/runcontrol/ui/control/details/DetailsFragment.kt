@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.runcontrol.R
 import com.example.runcontrol.databinding.FragmentDetailsBinding
@@ -19,6 +21,7 @@ import com.google.android.gms.maps.model.*
 import com.patrykandpatryk.vico.core.axis.formatter.PercentageFormatAxisValueFormatter
 import com.patrykandpatryk.vico.core.axis.vertical.VerticalAxis
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 //    TODO: sliding left right for other runs
 //    TODO: on map click transition to new fragment allowing to view route with more details like zooming in and out
@@ -73,10 +76,13 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         }
         detailsViewModel.setChartData(args.run.paceTimes)
 
-    }
+        binding.deleteBtn.setOnClickListener {
+            lifecycleScope.launch {
+                detailsViewModel.removeFromDb(args.run)
+            }
+            findNavController().navigateUp()
+        }
 
-    override fun onStart() {
-        super.onStart()
     }
 
     @SuppressLint("MissingPermission")

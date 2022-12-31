@@ -6,9 +6,6 @@ import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.*
 
-// days: Wed Thurs Fri Sat Sun Mon Tues
-// week: 1-
-
 object ChartUtil {
 
     fun daysOfLastWeek(): MutableList<String> {
