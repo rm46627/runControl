@@ -25,6 +25,10 @@ import kotlinx.coroutines.launch
 
 //    TODO: sliding left right for other runs
 //    TODO: on map click transition to new fragment allowing to view route with more details like zooming in and out
+//    TODO:
+//        binding.chartView.marker = marker
+//        binding.chartView.chart?.addDecoration(decoration = thresholdLine)
+//    TODO: make the avg pace chart at 100% yaxis point the best global pace
 
 @AndroidEntryPoint
 class DetailsFragment : Fragment(), OnMapReadyCallback {
@@ -68,8 +72,6 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         binding.dateValue.text = args.run.dateToFullDateTime()
 
         binding.chartView.entryProducer = detailsViewModel.chartEntryModelProducer
-//        binding.chartView.marker = marker
-//        binding.chartView.chart?.addDecoration(decoration = thresholdLine)
         with(binding.chartView.startAxis as VerticalAxis) {
             this.maxLabelCount = 5
             this.valueFormatter = PercentageFormatAxisValueFormatter()

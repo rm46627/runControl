@@ -31,12 +31,14 @@ object View {
     }
 
     fun View.hideFadeOut() {
-        val anim: Animation = AlphaAnimation(1f, 0f).apply {
-            interpolator = AccelerateInterpolator()
-            duration = 1000
+        if (this.visibility != View.INVISIBLE){
+            val anim: Animation = AlphaAnimation(1f, 0f).apply {
+                interpolator = AccelerateInterpolator()
+                duration = 1000
+            }
+            this.startAnimation(anim)
+            this.hide()
         }
-        this.startAnimation(anim)
-        this.hide()
     }
 
     fun View.gone(){

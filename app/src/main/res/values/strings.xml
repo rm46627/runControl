@@ -13,13 +13,18 @@
     <string name="timer_placeholder">3</string>
     <string name="distance_textView">Distance</string>
     <string name="time_textView">Time</string>
-    <string name="distance_placeholder">0 m</string>
+    <string name="distance0_placeholder">0 m</string>
+    <string name="distance_placeholder">12.20 km</string>
     <string name="time_placeholder">00:00:00</string>
     <string name="share_btn">Share</string>
     <string name="date_placeholder">01/01/2001</string>
     <string name="pace_textView">Avg. Pace (min/km)</string>
+    <string name="bestPace_textView">Fastest kilometer</string>
+    <string name="bestAvgPaceForWorkout_textView">Best pace (min/km)</string>
     <string name="pace_placeholder">00:00</string>
-    <string name="calories_placeholder">0</string>
+    <string name="calories_placeholder">320</string>
+    <string name="calories0_placeholder">0</string>
+    <string name="workouts_placeholder">15</string>
     <string name="date_textView">Started</string>
     <string name="pace_zero_text_value">00:00</string>
     <string name="timer_zero_text_value">00:00:00</string>
@@ -42,6 +47,9 @@
     <string name="time_chip">Time</string>
     <string name="distance_chip">Distance</string>
     <string name="calories_chip">Calories</string>
+    <string name="global_stats_textView">Global statistics</string>
+    <string name="allKilometers_textView">All kilometers run</string>
+    <string name="workouts_textView">Workouts</string>
 
 
 </resources>

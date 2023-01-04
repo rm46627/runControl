@@ -57,7 +57,7 @@
             </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
 
             <TextView
-                android:id="@+id/chart_textView"
+                android:id="@+id/weekActivity_textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -66,22 +66,23 @@
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/recycler_cardView" />
 
             <com.google.android.material.circularreveal.cardview.CircularRevealCardView
+                android:id="@+id/weekActivity_cardView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginBottom="8dp"
                 android:background="@color/white"
+                android:visibility="gone"
                 app:cardCornerRadius="5dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/chart_textView">
+                app:layout_constraintTop_toBottomOf="@id/weekActivity_textView">
 
                 <com.patrykandpatryk.vico.view.chart.ChartView
                     android:id="@+id/weekActivity_chartView"
@@ -94,13 +95,188 @@
                     android:background="@color/white"
                     app:chart="column"
                     app:columnChartStyle="@style/LineChartColumnChartStyle"
-                    app:startAxisStyle="@style/LineChartControlAxisStyle.Start"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:showBottomAxis="true"
-                    app:showStartAxis="true" />
+                    app:showStartAxis="true"
+                    app:startAxisStyle="@style/LineChartControlAxisStyle.Start" />
+            </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
+
+            <TextView
+                android:id="@+id/globalStats_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/global_stats_textView"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/weekActivity_cardView" />
+
+            <com.google.android.material.circularreveal.cardview.CircularRevealCardView
+                android:id="@+id/globalStats_cardView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/white"
+                android:visibility="gone"
+                app:cardCornerRadius="5dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/globalStats_textView">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/workouts_imageView"
+                        android:layout_width="30dp"
+                        android:layout_height="0dp"
+                        android:layout_marginEnd="2dp"
+                        android:src="@drawable/ic_flag"
+                        app:layout_constraintBottom_toBottomOf="@+id/workoutsValue_textView"
+                        app:layout_constraintEnd_toStartOf="@+id/workoutsValue_textView"
+                        app:layout_constraintTop_toTopOf="@+id/workoutsValue_textView" />
+
+                    <TextView
+                        android:id="@+id/workoutsValue_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="64dp"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/workouts_placeholder"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        app:layout_constraintEnd_toStartOf="@+id/allKilometers_imageView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/workouts_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:text="@string/workouts_textView"
+                        app:layout_constraintEnd_toEndOf="@+id/workoutsValue_textView"
+                        app:layout_constraintStart_toStartOf="@+id/workouts_imageView"
+                        app:layout_constraintTop_toBottomOf="@+id/workoutsValue_textView" />
+
+                    <ImageView
+                        android:id="@+id/allKilometers_imageView"
+                        android:layout_width="30dp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="64dp"
+                        android:src="@drawable/ic_run"
+                        app:layout_constraintBottom_toBottomOf="@+id/allKilometersValue_textView"
+                        app:layout_constraintEnd_toStartOf="@+id/allKilometersValue_textView"
+                        app:layout_constraintStart_toEndOf="@+id/workoutsValue_textView"
+                        app:layout_constraintTop_toTopOf="@+id/allKilometersValue_textView" />
+
+                    <TextView
+                        android:id="@+id/allKilometersValue_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:text="@string/distance_placeholder"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/workoutsValue_textView"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/allKilometers_imageView"
+                        app:layout_constraintTop_toTopOf="@+id/workoutsValue_textView" />
+
+                    <TextView
+                        android:id="@+id/allKilometers_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:text="@string/allKilometers_textView"
+                        app:layout_constraintEnd_toEndOf="@+id/allKilometersValue_textView"
+                        app:layout_constraintStart_toStartOf="@+id/allKilometers_imageView"
+                        app:layout_constraintTop_toBottomOf="@+id/allKilometersValue_textView" />
+
+                    <ImageView
+                        android:id="@+id/bestPace_imageView"
+                        android:layout_width="30dp"
+                        android:layout_height="0dp"
+                        android:layout_marginEnd="2dp"
+                        android:src="@drawable/ic_hourglass"
+                        app:layout_constraintBottom_toBottomOf="@+id/bestPaceValue_textView"
+                        app:layout_constraintEnd_toStartOf="@+id/bestPaceValue_textView"
+                        app:layout_constraintStart_toStartOf="@+id/workouts_imageView"
+                        app:layout_constraintTop_toTopOf="@+id/bestPaceValue_textView" />
+
+                    <TextView
+                        android:id="@+id/bestPaceValue_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/pace_placeholder"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        app:layout_constraintEnd_toEndOf="@+id/workoutsValue_textView"
+                        app:layout_constraintStart_toEndOf="@+id/bestPace_imageView"
+                        app:layout_constraintTop_toBottomOf="@+id/workouts_textView" />
+
+                    <TextView
+                        android:id="@+id/bestPace_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:text="@string/bestPace_textView"
+                        app:layout_constraintEnd_toEndOf="@+id/bestPaceValue_textView"
+                        app:layout_constraintStart_toStartOf="@+id/bestPace_imageView"
+                        app:layout_constraintTop_toBottomOf="@+id/bestPaceValue_textView" />
+
+                    <ImageView
+                        android:id="@+id/allBurned_imageView"
+                        android:layout_width="30dp"
+                        android:layout_height="0dp"
+                        android:src="@drawable/ic_fire"
+                        app:layout_constraintBottom_toBottomOf="@+id/allBurnedValue_textView"
+                        app:layout_constraintEnd_toStartOf="@+id/allBurnedValue_textView"
+                        app:layout_constraintStart_toStartOf="@+id/allKilometers_imageView"
+                        app:layout_constraintTop_toTopOf="@+id/allBurnedValue_textView" />
+
+                    <TextView
+                        android:id="@+id/allBurnedValue_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/calories_placeholder"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        app:layout_constraintEnd_toEndOf="@+id/allKilometersValue_textView"
+                        app:layout_constraintStart_toEndOf="@+id/allBurned_imageView"
+                        app:layout_constraintTop_toBottomOf="@+id/allKilometers_textView" />
+
+                    <TextView
+                        android:id="@+id/allBurned_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/burned_kcal_textView"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/allBurnedValue_textView"
+                        app:layout_constraintStart_toStartOf="@+id/allBurned_imageView"
+                        app:layout_constraintTop_toBottomOf="@+id/allBurnedValue_textView" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
             </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

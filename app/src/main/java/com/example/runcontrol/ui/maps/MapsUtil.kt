@@ -58,6 +58,13 @@ object MapsUtil {
         return String.format("%02d:%02d", minutes, seconds)
     }
 
+    fun formatPace(pace: Int): String {
+        val minutes = ((pace / 60) % 60)
+        val seconds = (pace % 60)
+        return String.format("%02d:%02d", minutes, seconds)
+    }
+
+
     private fun fromVectorToBitmap(resources: Resources, id: Int, color: Int): BitmapDescriptor {
         val vectorDrawable: Drawable = ResourcesCompat.getDrawable(resources, id, null)
             ?: return BitmapDescriptorFactory.defaultMarker()

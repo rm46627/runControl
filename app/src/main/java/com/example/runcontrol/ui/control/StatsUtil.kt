@@ -6,7 +6,7 @@ import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.*
 
-object ChartUtil {
+object StatsUtil {
 
     fun daysOfLastWeek(): MutableList<String> {
         val days = mutableListOf<String>()
@@ -31,6 +31,31 @@ object ChartUtil {
                 distancesOfWeek[it.dateToDayOfWeek()]!! + it.distanceMeters
         }
         return distancesOfWeek.values.toMutableList().map { (it/1000).round(2) }
+    }
+
+    fun sumKilometers(runs: List<RunEntity>): Double {
+        var sum = 0.0
+        runs.forEach {
+            sum += it.distanceMeters
+        }
+        return sum
+    }
+
+    fun sumBurned(runs: List<RunEntity>): Int {
+        var sum = 0
+        runs.forEach {
+            sum += it.burnedKcal
+        }
+        return sum
+    }
+
+    fun bestPace(runs: List<RunEntity>): Int {
+        var bestPace = 0
+        runs.forEach {
+            val max = it.paceTimes.max()
+            if( max > bestPace) bestPace = max
+        }
+        return bestPace
     }
 
 }
