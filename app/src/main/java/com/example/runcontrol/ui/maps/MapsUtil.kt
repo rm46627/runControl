@@ -59,8 +59,12 @@ object MapsUtil {
     }
 
     fun formatPace(pace: Int): String {
-        val minutes = ((pace / 60) % 60)
-        val seconds = (pace % 60)
+        var p = pace
+        if (p < 0) {
+            p *= -1
+        }
+        val minutes = ((p / 60) % 60)
+        val seconds = (p % 60)
         return String.format("%02d:%02d", minutes, seconds)
     }
 

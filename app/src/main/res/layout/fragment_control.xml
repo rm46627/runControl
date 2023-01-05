@@ -94,14 +94,14 @@
                     android:layout_marginBottom="8dp"
                     android:background="@color/white"
                     app:chart="column"
-                    app:columnChartStyle="@style/LineChartColumnChartStyle"
+                    app:columnChartStyle="@style/ColumnChartStyle"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:showBottomAxis="true"
                     app:showStartAxis="true"
-                    app:startAxisStyle="@style/LineChartControlAxisStyle.Start" />
+                    app:startAxisStyle="@style/WeekActivityChartAxisStyle.Start" />
             </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
 
             <TextView
@@ -266,7 +266,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="1dp"
                         android:layout_marginBottom="8dp"
-                        android:text="@string/burned_kcal_textView"
+                        android:text="@string/all_burned_kcal_textView"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="@+id/allBurnedValue_textView"
                         app:layout_constraintStart_toStartOf="@+id/allBurned_imageView"
@@ -274,9 +274,6 @@
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
             </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

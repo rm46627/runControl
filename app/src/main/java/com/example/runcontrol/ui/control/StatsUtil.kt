@@ -52,8 +52,8 @@ object StatsUtil {
     fun bestPace(runs: List<RunEntity>): Int {
         var bestPace = 0
         runs.forEach {
-            val max = it.paceTimes.max()
-            if( max > bestPace) bestPace = max
+            val min = it.paceTimes.min()
+            if( min > bestPace) bestPace = min
         }
         return bestPace
     }

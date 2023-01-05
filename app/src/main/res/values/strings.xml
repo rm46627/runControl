@@ -18,7 +18,8 @@
     <string name="time_placeholder">00:00:00</string>
     <string name="share_btn">Share</string>
     <string name="date_placeholder">01/01/2001</string>
-    <string name="pace_textView">Avg. Pace (min/km)</string>
+    <string name="avgPace_textView">Avg. Pace (min/km)</string>
+    <string name="pace_textView">Pace</string>
     <string name="bestPace_textView">Fastest kilometer</string>
     <string name="bestAvgPaceForWorkout_textView">Best pace (min/km)</string>
     <string name="pace_placeholder">00:00</string>
@@ -28,7 +29,8 @@
     <string name="date_textView">Started</string>
     <string name="pace_zero_text_value">00:00</string>
     <string name="timer_zero_text_value">00:00:00</string>
-    <string name="burned_kcal_textView">Burned kcal</string>
+    <string name="all_burned_kcal_textView">Burned kcal</string>
+    <string name="burned_kcal_textView">Kcal burned</string>
     <string name="history_fragment_name">Control</string>
     <string name="map_fragment_name">Run</string>
     <string name="save_btn">Save</string>
@@ -50,6 +52,7 @@
     <string name="global_stats_textView">Global statistics</string>
     <string name="allKilometers_textView">All kilometers run</string>
     <string name="workouts_textView">Workouts</string>
+    <string name="stats_textView">Other statistics</string>
 
 
 </resources>

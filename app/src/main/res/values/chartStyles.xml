@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="LineChartColumnChartStyle">
+    <style name="ColumnChartStyle">
         <item name="column1">@style/ColumnChartColumn1</item>
     </style>
 
@@ -10,30 +10,54 @@
         <item name="thickness">16dp</item>
     </style>
 
-    <style name="LineChartAxisStyle1">
+    <style name="LineChartStyle">
+        <item name="line1Spec">@style/LineChartLine1Spec</item>
+    </style>
+
+    <style name="LineChartLine1Spec">
+        <item name="color">@color/colorPrimaryLight</item>
+    </style>
+
+    <style name="ChartAxisStyle1">
         <item name="horizontalAxisTickPosition">center</item>
         <item name="horizontalAxisTickOffset">1</item>
         <item name="horizontalAxisTickSpacing">3</item>
     </style>
 
-    <style name="LineChartControlAxisStyle">
+    <style name="WeekActivityChartAxisStyle">
         <item name="showTitle">true</item>
         <item name="chartHorizontalScrollingEnabled">false</item>
         <item name="showGuideline">false</item>
         <item name="showTick">false</item>
     </style>
 
-    <style name="LineChartControlAxisStyle.Bottom">
+    <style name="WeekActivityChartAxisStyle.Bottom">
         <item name="showTitle">true</item>
     </style>
 
-    <style name="LineChartControlAxisStyle.Start">
+    <style name="WeekActivityChartAxisStyle.Start">
         <item name="verticalAxisHorizontalLabelPosition">outside</item>
         <item name="title">Kilometers</item>
-        <item name="titleStyle">@style/LineChartAxisTitleStyle.Start</item>
+        <item name="titleStyle">@style/ChartAxisTitleStyle.Start</item>
     </style>
 
-    <style name="LineChartAxisTitleStyle">
+    <style name="PaceChartAxisStyle">
+        <item name="showTitle">true</item>
+        <item name="chartHorizontalScrollingEnabled">false</item>
+    </style>
+
+    <style name="PaceChartAxisStyle.Bottom">
+        <item name="showTitle">true</item>
+        <item name="title">Kilometer</item>
+    </style>
+
+    <style name="PaceChartAxisStyle.Start">
+        <item name="verticalAxisHorizontalLabelPosition">outside</item>
+        <item name="title">Pace (min/km)</item>
+        <item name="titleStyle">@style/ChartAxisTitleStyle.Start</item>
+    </style>
+
+    <style name="ChartAxisTitleStyle">
         <item name="android:paddingTop">2dp</item>
         <item name="android:paddingBottom">2dp</item>
         <item name="android:paddingStart">8dp</item>
@@ -41,7 +65,7 @@
         <item name="typeface">sans</item>
     </style>
 
-    <style name="LineChartAxisTitleStyle.Start">
+    <style name="ChartAxisTitleStyle.Start">
         <item name="labelColor">?colorOnBackground</item>
     </style>
 

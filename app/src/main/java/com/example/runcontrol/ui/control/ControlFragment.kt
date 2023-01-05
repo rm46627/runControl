@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.runcontrol.database.entities.RunEntity
 import com.example.runcontrol.databinding.FragmentControlBinding
 import com.example.runcontrol.extensions.View.show
 import com.example.runcontrol.extensions.View.showFadeIn
@@ -19,7 +20,9 @@ import com.example.runcontrol.ui.control.StatsUtil.sumBurned
 import com.example.runcontrol.ui.control.StatsUtil.sumKilometers
 import com.example.runcontrol.ui.maps.MapsUtil
 import com.patrykandpatryk.vico.core.axis.formatter.AxisValueFormatter
+import com.patrykandpatryk.vico.core.axis.formatter.DecimalFormatAxisValueFormatter
 import com.patrykandpatryk.vico.core.axis.horizontal.HorizontalAxis
+import com.patrykandpatryk.vico.core.axis.vertical.VerticalAxis
 
 //    TODO:
 //        binding.chartView.marker = marker
@@ -59,11 +62,7 @@ class ControlFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding.weekActivityChartView.entryProducer = controlViewModel.chartEntryModelProducer
-        with(binding.weekActivityChartView.bottomAxis as HorizontalAxis) {
-            this.valueFormatter = AxisValueFormatter { x, _ -> lastWeek[x.toInt() % lastWeek.size] }
-        }
+        setChart()
     }
 
     override fun onDestroyView() {
@@ -71,42 +70,59 @@ class ControlFragment : Fragment() {
         _binding = null
     }
 
+    private fun setChart() {
+        binding.weekActivityChartView.entryProducer = controlViewModel.chartEntryModelProducer
+        with(binding.weekActivityChartView.startAxis as VerticalAxis) {
+            this.valueFormatter = DecimalFormatAxisValueFormatter("##")
+        }
+        with(binding.weekActivityChartView.bottomAxis as HorizontalAxis) {
+            this.valueFormatter = AxisValueFormatter { x, _ -> lastWeek[x.toInt() % lastWeek.size] }
+        }
+    }
+
     private fun observeRuns() {
         mainViewModel.readRuns.observe(viewLifecycleOwner) { runs ->
             mAdapter.setData(runs)
             val distList = mapDistancesToLastWeek(runs, lastWeek)
             if(distList.any { it != 0.0 }) {
-                binding.weekActivityCardView.show()
-                binding.weekActivityTextView.showFadeIn()
-                binding.weekActivityChartView.showFadeIn()
-                controlViewModel.setChartData(distList)
+                showWeekCharts(distList)
             }
-
             if(runs.isNotEmpty()) {
-                binding.globalStatsCardView.show()
-                binding.globalStatsTextView.showFadeIn()
-
-                binding.workoutsImageView.showFadeIn()
-                binding.workoutsTextView.showFadeIn()
-                binding.workoutsValueTextView.text = runs.size.toString()
-                binding.workoutsValueTextView.showFadeIn()
-
-                binding.allKilometersImageView.showFadeIn()
-                binding.allKilometersTextView.showFadeIn()
-                binding.allKilometersValueTextView.text = MapsUtil.formatDistance(sumKilometers(runs))
-                binding.allKilometersValueTextView.showFadeIn()
-
-                binding.bestPaceImageView.showFadeIn()
-                binding.bestPaceTextView.showFadeIn()
-                binding.bestPaceValueTextView.text = MapsUtil.formatPace(bestPace(runs))
-                binding.bestPaceValueTextView.showFadeIn()
-
-                binding.allBurnedImageView.showFadeIn()
-                binding.allBurnedTextView.showFadeIn()
-                binding.allBurnedValueTextView.text = sumBurned(runs).toString()
-                binding.allBurnedValueTextView.showFadeIn()
+                showStats(runs)
             }
         }
+    }
+
+    private fun showWeekCharts(distList: List<Double>) {
+        binding.weekActivityCardView.show()
+        binding.weekActivityTextView.showFadeIn()
+        binding.weekActivityChartView.showFadeIn()
+        controlViewModel.setChartData(distList)
+    }
+
+    private fun showStats(runs: List<RunEntity>) {
+        binding.globalStatsCardView.show()
+        binding.globalStatsTextView.showFadeIn()
+
+        binding.workoutsImageView.showFadeIn()
+        binding.workoutsTextView.showFadeIn()
+        binding.workoutsValueTextView.text = runs.size.toString()
+        binding.workoutsValueTextView.showFadeIn()
+
+        binding.allKilometersImageView.showFadeIn()
+        binding.allKilometersTextView.showFadeIn()
+        binding.allKilometersValueTextView.text = MapsUtil.formatDistance(sumKilometers(runs))
+        binding.allKilometersValueTextView.showFadeIn()
+
+        binding.bestPaceImageView.showFadeIn()
+        binding.bestPaceTextView.showFadeIn()
+        binding.bestPaceValueTextView.text = MapsUtil.formatPace(bestPace(runs))
+        binding.bestPaceValueTextView.showFadeIn()
+
+        binding.allBurnedImageView.showFadeIn()
+        binding.allBurnedTextView.showFadeIn()
+        binding.allBurnedValueTextView.text = sumBurned(runs).toString()
+        binding.allBurnedValueTextView.showFadeIn()
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {

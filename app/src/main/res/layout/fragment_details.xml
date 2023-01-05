@@ -6,30 +6,51 @@
     android:layout_height="match_parent"
     android:background="@color/lightGray">
 
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="2dp"
+        android:src="@drawable/ic_clock"
+        app:layout_constraintBottom_toBottomOf="@+id/time_value"
+        app:layout_constraintEnd_toStartOf="@+id/time_value"
+        app:layout_constraintTop_toTopOf="@+id/time_value" />
+
     <TextView
-        android:id="@+id/date_value"
+        android:id="@+id/time_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="@string/dateFull_placeholder"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/time_placeholder"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="23sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/deleteBtn"
-        app:layout_constraintEnd_toStartOf="@+id/deleteBtn"
+        app:layout_constraintEnd_toStartOf="@id/date_value"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/deleteBtn" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/deleteBtn"
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="2dp"
+        android:src="@drawable/ic_calendar"
+        app:layout_constraintBottom_toBottomOf="@+id/date_value"
+        app:layout_constraintEnd_toStartOf="@+id/date_value"
+        app:layout_constraintTop_toTopOf="@+id/date_value" />
+
+    <TextView
+        android:id="@+id/date_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/remove_btn"
-        app:icon="@drawable/ic_delete"
+        android:layout_marginTop="8dp"
+        android:text="@string/date_placeholder"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="23sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/time_value"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.circularreveal.cardview.CircularRevealCardView
@@ -51,6 +72,10 @@
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
             app:layout_constraintBottom_toTopOf="@id/data"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -73,7 +98,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/avgPaceChart_textView"
+                android:id="@+id/paceChart_textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -83,24 +108,23 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/data_constraintLayout" />
+                app:layout_constraintTop_toBottomOf="@id/otherStats_cardView" />
 
             <com.google.android.material.circularreveal.cardview.CircularRevealCardView
+                android:id="@+id/paceChart_cardView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginBottom="8dp"
                 android:background="@color/white"
                 app:cardCornerRadius="10dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/avgPaceChart_textView">
+                app:layout_constraintTop_toBottomOf="@id/paceChart_textView">
 
                 <com.patrykandpatryk.vico.view.chart.ChartView
-                    android:id="@+id/chart_view"
+                    android:id="@+id/pace_chartView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -108,9 +132,11 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="16dp"
                     android:background="@color/white"
+                    app:axisStyle="@style/PaceChartAxisStyle"
+                    app:bottomAxisStyle="@style/PaceChartAxisStyle.Bottom"
+                    app:startAxisStyle="@style/PaceChartAxisStyle.Start"
                     app:chart="line"
-                    app:axisStyle="@style/LineChartAxisStyle1"
-                    app:columnChartStyle="@style/LineChartColumnChartStyle"
+                    app:lineChartStyle="@style/LineChartStyle"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -119,9 +145,175 @@
                     app:showStartAxis="true" />
             </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
 
+            <com.google.android.material.circularreveal.cardview.CircularRevealCardView
+                android:id="@+id/otherStats_cardView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/white"
+                app:cardCornerRadius="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/data_constraintLayout">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/runTime_imageView"
+                        android:layout_width="30dp"
+                        android:layout_height="0dp"
+                        android:layout_marginEnd="2dp"
+                        android:src="@drawable/ic_flag"
+                        app:layout_constraintBottom_toBottomOf="@+id/runTimeValue_textView"
+                        app:layout_constraintEnd_toStartOf="@+id/runTimeValue_textView"
+                        app:layout_constraintTop_toTopOf="@+id/runTimeValue_textView" />
+
+                    <TextView
+                        android:id="@+id/runTimeValue_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="64dp"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/time_placeholder"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        app:layout_constraintEnd_toStartOf="@+id/runDistance_imageView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/runTime_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:text="@string/time"
+                        app:layout_constraintEnd_toEndOf="@+id/runTimeValue_textView"
+                        app:layout_constraintStart_toStartOf="@+id/runTime_imageView"
+                        app:layout_constraintTop_toBottomOf="@+id/runTimeValue_textView" />
+
+                    <ImageView
+                        android:id="@+id/runDistance_imageView"
+                        android:layout_width="30dp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="64dp"
+                        android:src="@drawable/ic_run"
+                        app:layout_constraintBottom_toBottomOf="@+id/runDistanceValue_textView"
+                        app:layout_constraintEnd_toStartOf="@+id/runDistanceValue_textView"
+                        app:layout_constraintStart_toEndOf="@+id/runTimeValue_textView"
+                        app:layout_constraintTop_toTopOf="@+id/runDistanceValue_textView" />
+
+                    <TextView
+                        android:id="@+id/runDistanceValue_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:text="@string/distance_placeholder"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/runTimeValue_textView"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/runDistance_imageView"
+                        app:layout_constraintTop_toTopOf="@+id/runTimeValue_textView" />
+
+                    <TextView
+                        android:id="@+id/runDistance_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:text="@string/distance_textView"
+                        app:layout_constraintEnd_toEndOf="@+id/runDistanceValue_textView"
+                        app:layout_constraintStart_toStartOf="@+id/runDistance_imageView"
+                        app:layout_constraintTop_toBottomOf="@+id/runDistanceValue_textView" />
+
+                    <ImageView
+                        android:id="@+id/avgPace_imageView"
+                        android:layout_width="30dp"
+                        android:layout_height="0dp"
+                        android:layout_marginEnd="2dp"
+                        android:src="@drawable/ic_hourglass"
+                        app:layout_constraintBottom_toBottomOf="@+id/avgPaceValue_textView"
+                        app:layout_constraintEnd_toStartOf="@+id/avgPaceValue_textView"
+                        app:layout_constraintStart_toStartOf="@+id/runTime_imageView"
+                        app:layout_constraintTop_toTopOf="@+id/avgPaceValue_textView" />
+
+                    <TextView
+                        android:id="@+id/avgPaceValue_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/pace_placeholder"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        app:layout_constraintEnd_toEndOf="@+id/runTimeValue_textView"
+                        app:layout_constraintStart_toEndOf="@+id/avgPace_imageView"
+                        app:layout_constraintTop_toBottomOf="@+id/runTime_textView" />
+
+                    <TextView
+                        android:id="@+id/avgPace_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:text="@string/avgPace_textView"
+                        app:layout_constraintEnd_toEndOf="@+id/avgPaceValue_textView"
+                        app:layout_constraintStart_toStartOf="@+id/avgPace_imageView"
+                        app:layout_constraintTop_toBottomOf="@+id/avgPaceValue_textView" />
+
+                    <ImageView
+                        android:id="@+id/allBurned_imageView"
+                        android:layout_width="30dp"
+                        android:layout_height="0dp"
+                        android:src="@drawable/ic_fire"
+                        app:layout_constraintBottom_toBottomOf="@+id/allBurnedValue_textView"
+                        app:layout_constraintEnd_toStartOf="@+id/allBurnedValue_textView"
+                        app:layout_constraintStart_toStartOf="@+id/runDistance_imageView"
+                        app:layout_constraintTop_toTopOf="@+id/allBurnedValue_textView" />
+
+                    <TextView
+                        android:id="@+id/allBurnedValue_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/calories_placeholder"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        app:layout_constraintEnd_toEndOf="@+id/runDistanceValue_textView"
+                        app:layout_constraintStart_toEndOf="@+id/allBurned_imageView"
+                        app:layout_constraintTop_toBottomOf="@+id/runDistance_textView" />
+
+                    <TextView
+                        android:id="@+id/allBurned_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/burned_kcal_textView"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/allBurnedValue_textView"
+                        app:layout_constraintStart_toStartOf="@+id/allBurned_imageView"
+                        app:layout_constraintTop_toBottomOf="@+id/allBurnedValue_textView" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
+
+            <Button
+                android:id="@+id/deleteBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/remove_btn"
+                app:icon="@drawable/ic_delete"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/paceChart_cardView" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     </ScrollView>
 

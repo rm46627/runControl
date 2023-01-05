@@ -123,7 +123,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="1dp"
-                    android:text="@string/burned_kcal_textView"
+                    android:text="@string/all_burned_kcal_textView"
                     app:layout_constraintEnd_toEndOf="@id/caloriesValue_textView"
                     app:layout_constraintStart_toStartOf="@+id/caloriesValue_textView"
                     app:layout_constraintTop_toBottomOf="@+id/caloriesValue_textView" />

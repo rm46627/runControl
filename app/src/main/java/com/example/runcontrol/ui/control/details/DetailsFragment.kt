@@ -12,13 +12,17 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.runcontrol.R
 import com.example.runcontrol.databinding.FragmentDetailsBinding
+import com.example.runcontrol.ui.maps.MapsUtil
 import com.example.runcontrol.ui.maps.MapsUtil.drawPolyline
+import com.example.runcontrol.ui.maps.MapsUtil.formatAvgPace
+import com.example.runcontrol.ui.maps.MapsUtil.formatDistance
+import com.example.runcontrol.ui.maps.MapsUtil.getTimerStringFromTime
 import com.example.runcontrol.ui.maps.MapsUtil.showBiggerPicture
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import com.patrykandpatryk.vico.core.axis.formatter.PercentageFormatAxisValueFormatter
+import com.patrykandpatryk.vico.core.axis.formatter.AxisValueFormatter
 import com.patrykandpatryk.vico.core.axis.vertical.VerticalAxis
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -69,14 +73,8 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         val mapFragment = childFragmentManager.findFragmentById(R.id.details_map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
 
-        binding.dateValue.text = args.run.dateToFullDateTime()
-
-        binding.chartView.entryProducer = detailsViewModel.chartEntryModelProducer
-        with(binding.chartView.startAxis as VerticalAxis) {
-            this.maxLabelCount = 5
-            this.valueFormatter = PercentageFormatAxisValueFormatter()
-        }
-        detailsViewModel.setChartData(args.run.paceTimes)
+        setChart()
+        setStats()
 
         binding.deleteBtn.setOnClickListener {
             lifecycleScope.launch {
@@ -85,6 +83,23 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
             findNavController().navigateUp()
         }
 
+    }
+
+    private fun setChart() {
+        binding.paceChartView.entryProducer = detailsViewModel.chartEntryModelProducer
+        with(binding.paceChartView.startAxis as VerticalAxis) {
+            this.valueFormatter = AxisValueFormatter { y, _ -> MapsUtil.formatPace(y.toInt()) }
+        }
+        detailsViewModel.setChartData(args.run.paceTimes.map { it * -1 })
+    }
+
+    private fun setStats() {
+        binding.timeValue.text = args.run.dateToClockTime()
+        binding.dateValue.text = args.run.dateToCalendar()
+        binding.avgPaceValueTextView.text = formatAvgPace(args.run.avgPace)
+        binding.runDistanceValueTextView.text = formatDistance(args.run.distanceMeters)
+        binding.runTimeValueTextView.text = getTimerStringFromTime(args.run.runTime)
+        binding.allBurnedValueTextView.text = args.run.burnedKcal.toString()
     }
 
     @SuppressLint("MissingPermission")
