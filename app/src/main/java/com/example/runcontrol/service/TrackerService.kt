@@ -43,6 +43,7 @@ class TrackerService: LifecycleService() {
     private var currentMeters = 0
 
     companion object {
+        //  TODO: change fields used in MapFragment to one data object (use stateflow?)
         val started = MutableLiveData<Boolean>()
         val distanceMeters = MutableLiveData<Double>()
         val runTime = MutableLiveData<Int>()
