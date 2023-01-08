@@ -61,6 +61,7 @@ class HistoryFragment : Fragment() {
         _binding = null
     }
 
+    // TODO: move sorting to VM
     private fun observeRuns() {
         val desc = historyViewModel.listDesc
         mainViewModel.readRuns.observe(viewLifecycleOwner) { runs ->
